@@ -1,6 +1,6 @@
 ---
 title: "Analyzing sentiments"
-author: "Tero"
+author: "Tero Jalkanen"
 date: "2023-01-14"
 output: ioslides_presentation
 ---
@@ -26,6 +26,10 @@ here::i_am("text_analysis.Rmd")
 * The data contains 266 sentences which have been assessed as being `positive`, `negative` or `neutral`.
 
 * We want to explore the data and see if it is useful for sentiment analysis.
+
+## General properties of the data
+
+* There are no missing entries
 
 ```{r}
 
@@ -55,6 +59,22 @@ text_df %>%
   summarise(n = n()) %>% 
   mutate(prercentage = 100*n/length(text_df$sentiment)) %>% 
   knitr::kable(digits = 2, caption = "The sentiment labels for the example sentences")
+
+```
+
+## Unique sentences
+
+Check if there are duplicate sentences.
+
+```{r}
+## Find duplicate sentences
+
+doubles <- duplicated(text_df$sentence)
+
+#double check this
+text_df[doubles,] %>% 
+  group_by(sentence, sentiment) %>% 
+  summarise(n = n())
 
 ```
 
