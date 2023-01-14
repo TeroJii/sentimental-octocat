@@ -23,6 +23,10 @@ here::i_am("text_analysis.Rmd")
 
 ## Data 
 
+* The data contains 266 sentences which have been assessed as being `positive`, `negative` or `neutral`.
+
+* We want to explore the data and see if it is useful for sentiment analysis.
+
 ```{r}
 
 text_df <- readxl::read_excel(path = here("data", "sentences_with_sentiment.xlsx")) %>% 
@@ -38,6 +42,19 @@ text_df <- readxl::read_excel(path = here("data", "sentences_with_sentiment.xlsx
 
 # Let's take a look at the data
 skim(text_df)
+
+```
+
+## The balance of sentiments
+
+
+```{r}
+
+text_df %>% 
+  group_by(sentiment) %>% 
+  summarise(n = n()) %>% 
+  mutate(prercentage = 100*n/length(text_df$sentiment)) %>% 
+  knitr::kable(digits = 2, caption = "The sentiment labels for the example sentences")
 
 ```
 
