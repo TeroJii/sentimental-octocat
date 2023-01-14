@@ -7,13 +7,36 @@ output: ioslides_presentation
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+
+## Packages -----------
+
+library(readxl)
+library(here)
+library(tidyverse)
+library(janitor)
+
+## Set file paths
+here::i_am("text_analysis.Rmd")
+
 ```
 
 ## Data 
 
 ```{r}
 
-#text_df
+text_df <- readxl::read_excel(path = here("data", "sentences_with_sentiment.xlsx")) %>% 
+  # move sentiments under same column
+  mutate(sentiment = case_when(
+    Positive == 1 ~ "Positive",
+    Negative == 1 ~ "Negative",
+    Neutral == 1 ~ "Neutral",
+    # in case of missing sentiment
+    TRUE ~ "missing"
+  )) %>% 
+  janitor::clean_names()
+
+# Let's take a look at the data
+glimpse(text_df)
 
 ```
 
