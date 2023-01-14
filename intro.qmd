@@ -1,7 +1,13 @@
 # Introduction
 
-An introduction will appear here.
+Here I will add some brief notes about analyzing data in text format. The following two books helped me out tremendously [@Silge2017; @Hvitfeldt2022].
 
-## Level 2 header
+## Some basic concepts related to handling text
 
-Something about text analysis [@Silge2017].
++ String
+
++ Token
+
++ Corpus
+
++ Document-term matrix
