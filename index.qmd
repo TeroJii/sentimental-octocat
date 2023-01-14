@@ -1,0 +1,3 @@
+# Preface {.unnumbered}
+
+This is a template for documenting my learning experience in the spirit of literal programming. I will analyse a set of sentences which have been labelled as `positive`, `negative`, and `neutral`.

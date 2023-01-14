@@ -1,0 +1,30 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Title",
+    "section": "",
+    "text": "Preface\nThis is a template for documenting my learning experience in the spirit of literal programming. I will analyse a set of sentences which have been labelled as positive, negative, and neutral."
+  },
+  {
+    "objectID": "intro.html#level-2-header",
+    "href": "intro.html#level-2-header",
+    "title": "1  Introduction",
+    "section": "1.1 Level 2 header",
+    "text": "1.1 Level 2 header\nSomething about text analysis (Silge and Robinson 2017).\n\n\n\n\nSilge, J, and D. Robinson. 2017. Text Mining with r: A Tidy Approach. O’Reilly Media. https://www.tidytextmining.com/."
+  },
+  {
+    "objectID": "summary.html",
+    "href": "summary.html",
+    "title": "2  Summary",
+    "section": "",
+    "text": "Summary here…"
+  },
+  {
+    "objectID": "references.html",
+    "href": "references.html",
+    "title": "References",
+    "section": "",
+    "text": "Silge, J, and D. Robinson. 2017. Text Mining with r: A Tidy\nApproach. O’Reilly Media. https://www.tidytextmining.com/."
+  }
+]
