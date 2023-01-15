@@ -1,7 +1,7 @@
 ---
 title: "Analyzing sentiments"
 author: "Tero Jalkanen"
-date: "2023-01-14"
+date: "`r Sys.Date()`"
 output: ioslides_presentation
 ---
 

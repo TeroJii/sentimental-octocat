@@ -5,7 +5,7 @@ project:
 book:
   title: "Learning to Fly"
   author: "Tero Jalkanen"
-  date: "1/14/2023"
+  date: today
   chapters:
     - index.qmd
     - intro.qmd
