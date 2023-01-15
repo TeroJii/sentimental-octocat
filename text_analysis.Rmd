@@ -113,6 +113,8 @@ text_df %>%
 
 * Should we use the duplicated sentences only once?
 
+  - Add a parameter to filter duplicate sentences
+
 * How to deal with the imbalance between sentiments?
 
 * Evaluating classification performance?
