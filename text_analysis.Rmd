@@ -15,6 +15,7 @@ library(here)
 library(tidyverse)
 library(janitor)
 library(skimr)
+library(tidytext)
 
 ## Set file paths
 here::i_am("text_analysis.Rmd")
@@ -91,7 +92,7 @@ text_df %>%
 
 ## Duplicated sentences with differing sentiment label
 
-Are there duplicated senteces, where the sentence has been labelled differently?
+Are there duplicated sentences, where the sentence has been labelled differently?
 
 ```{r}
 
@@ -105,13 +106,29 @@ text_df %>%
 
 ```
 
+## Things to consider
+
+* Should we use the duplicated sentences only once?
+
+* How to deal with the imbalance between sentiments?
+
+* Evaluating classification performance?
+
+# Extracting words as tokens
+
+## Extracting words as tokens
+
+* Use words, as tokens, everything in small letters, remove punctuation, stopwords etc.
+
+```{r}
+print(text_df$sentence[1])
 
 
-## Slide with Bullets
+text_df %>% 
+  unnest_tokens(word, sentence)
 
-- Bullet 1
-- Bullet 2
-- Bullet 3
+```
+
 
 ## Slide with R Output
 
