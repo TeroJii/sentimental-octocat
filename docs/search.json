@@ -11,7 +11,7 @@
     "href": "intro.html#some-basic-concepts-related-to-handling-text",
     "title": "1  Introduction",
     "section": "1.1 Some basic concepts related to handling text",
-    "text": "1.1 Some basic concepts related to handling text\n\nString\nToken\nCorpus\nDocument-term matrix\n\n\n\n\n\nHvitfeldt, E., and J Silge. 2022. Supervised Machine Learning for Text Analysis in R. CRC Press. https://smltar.com/.\n\n\nSilge, J, and D. Robinson. 2017. Text Mining with R: A Tidy Approach. O’Reilly Media. https://www.tidytextmining.com/."
+    "text": "1.1 Some basic concepts related to handling text\n\nString\nToken\nCorpus\nDocument-term matrix\n\n\n\n\n\nHvitfeldt, E., and J. Silge. 2022. Supervised Machine Learning for Text Analysis in R. CRC Press. https://smltar.com/.\n\n\nSilge, J., and D. Robinson. 2017. Text Mining with R: A Tidy Approach. O’Reilly Media. https://www.tidytextmining.com/."
   },
   {
     "objectID": "summary.html",
@@ -25,6 +25,6 @@
     "href": "references.html",
     "title": "References",
     "section": "",
-    "text": "Hvitfeldt, E., and J Silge. 2022. Supervised Machine Learning for\nText Analysis in R. CRC Press. https://smltar.com/.\n\n\nSilge, J, and D. Robinson. 2017. Text Mining with R: A\nTidy Approach. O’Reilly Media. https://www.tidytextmining.com/."
+    "text": "Hvitfeldt, E., and J. Silge. 2022. Supervised Machine Learning for\nText Analysis in R. CRC Press. https://smltar.com/.\n\n\nSilge, J., and D. Robinson. 2017. Text Mining with R: A\nTidy Approach. O’Reilly Media. https://www.tidytextmining.com/."
   }
 ]
