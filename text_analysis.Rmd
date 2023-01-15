@@ -6,7 +6,7 @@ output: ioslides_presentation
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
 
 ## Packages -----------
 
@@ -41,7 +41,7 @@ text_df <- readxl::read_excel(path = here("data", "sentences_with_sentiment.xlsx
     Neutral == 1 ~ "Neutral",
     # in case of missing sentiment
     TRUE ~ "missing"
-  )) %>% 
+  ), .after = ID) %>% 
   janitor::clean_names()
 
 # Let's take a look at the data
@@ -67,16 +67,44 @@ text_df %>%
 Check if there are duplicate sentences.
 
 ```{r}
-## Find duplicate sentences
+## Find duplicate sentences ----
 
-doubles <- duplicated(text_df$sentence)
+# indices
+double_ind <- duplicated(text_df$sentence)
 
-#double check this
-text_df[doubles,] %>% 
-  group_by(sentence, sentiment) %>% 
+# The actual sentences
+doubles <- text_df$sentence[double_ind] %>% 
+  unique()
+
+```
+
+* There are `r length(doubles)` sentences which appear at least twice.
+
+```{r}
+
+# Let's print out the first example
+text_df %>% 
+  filter(sentence %in% doubles[1]) %>% 
+  select(sentiment, sentence)
+
+```
+
+## Duplicated sentences with differing sentiment label
+
+Are there duplicated senteces, where the sentence has been labelled differently?
+
+```{r}
+
+doubles_df <- data.frame(sentence = doubles, double_id = 1:length(doubles))
+
+text_df %>% 
+  filter(sentence %in% doubles) %>% 
+  left_join(doubles_df, by = "sentence") %>% 
+  group_by(double_id, sentiment) %>% 
   summarise(n = n())
 
 ```
+
 
 
 ## Slide with Bullets
