@@ -234,7 +234,7 @@ tidy_df %>%
   scale_color_gradient(limits = c(0, 0.001), 
                        low = "darkslategray4", high = "gray75") +
   facet_grid(sentiment ~ .) +
-  labs(x = "Negative (up) / Neutral (down)") +
+  labs(x = "Negative (top) / Neutral (bottom)") +
   theme(legend.position = "none")
   
   
