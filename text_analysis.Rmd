@@ -202,6 +202,20 @@ tidy_df %>%
 
 ## Which words associate with different sentiments
 
+
+```{r, fig.height=8, fig.width=10, warning=FALSE}
+
+tidy_df %>% 
+  count(word, sentiment, sort = TRUE) %>%
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+  comparison.cloud(colors = brewer.pal(n = 3, "Pastel1"),
+                   max.words = 60)
+
+```
+
+
+## Word Proportions in Negative/Neural vs. Positive sentences
+
 ```{r, warning=FALSE}
 
 tidy_df %>% 
@@ -226,19 +240,6 @@ tidy_df %>%
   
 
 ```
-
-## Positive/Negative words
-
-```{r}
-
-tidy_df %>% 
-  count(word, sentiment, sort = TRUE) %>%
-  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
-  comparison.cloud(colors = c("gray20", "gray80"),
-                   max.words = 100)
-
-```
-
 
 
 # Attaching sentiments to individual words
