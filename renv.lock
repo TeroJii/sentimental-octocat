@@ -1228,6 +1228,19 @@
       "Hash": "34c16f1ef796057bfa06d3f4ff818a5d",
       "Requirements": []
     },
+    "textdata": {
+      "Package": "textdata",
+      "Version": "0.4.4",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "c94c6cafedd394e259193d548a6f5945",
+      "Requirements": [
+        "fs",
+        "rappdirs",
+        "readr",
+        "tibble"
+      ]
+    },
     "tibble": {
       "Package": "tibble",
       "Version": "3.1.8",
