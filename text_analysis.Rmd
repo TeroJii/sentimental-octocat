@@ -3,6 +3,8 @@ title: "Analyzing sentiments"
 author: "Tero Jalkanen"
 date: "`r Sys.Date()`"
 output: ioslides_presentation
+params:
+  filter_duplicates: TRUE
 ---
 
 ```{r setup, include=FALSE}
@@ -91,6 +93,7 @@ text_df %>%
   filter(sentence %in% doubles[1]) %>% 
   select(sentiment, sentence)
 
+
 ```
 
 ## Duplicated sentences with differing sentiment label
@@ -109,11 +112,42 @@ text_df %>%
 
 ```
 
+## What happens to sentiment balance without duplicates?
+
+```{r}
+# sentiments without duplicates
+no_doubles_df <- text_df %>%
+  select(-id) %>% 
+  # include doubles only once
+  unique.data.frame()
+
+
+#balance table
+no_doubles_df %>% 
+  group_by(sentiment) %>% 
+  summarise(n = n()) %>% 
+  mutate(prercentage = 100*n/length(no_doubles_df$sentiment)) %>% 
+  knitr::kable(digits = 2, caption = "The sentiment labels for the example sentences")
+
+
+## Filter out duplicate sentences if the filtering parameter is set to TRUE
+if(params$filter_duplicates){
+  # remove duplicate entiries
+  # each sentence only appears once
+  text_df <- text_df[!double_ind,]
+}
+
+
+```
+
+
 ## Things to consider
 
 * Should we use the duplicated sentences only once?
 
-  - Add a parameter to filter duplicate sentences
+  - Having the same sentence with the same sentiment label twice does not add new information
+
+  - Added a parameter to filter out duplicate sentences
 
 * How to deal with the imbalance between sentiments?
 
