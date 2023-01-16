@@ -18,6 +18,7 @@ library(tidyverse)
 library(janitor)
 library(skimr)
 library(tidytext)
+library(scales)
 
 ## Set file paths
 here::i_am("text_analysis.Rmd")
@@ -195,11 +196,31 @@ tidy_df %>%
 ```
 
 
+## Which words associate with different sentiments
 
-## Slide with R Output
+```{r}
 
-```{r cars, echo = TRUE}
-summary(cars)
+tidy_df %>% 
+  count(sentiment, word) %>% 
+  group_by(sentiment) %>% 
+  mutate(proportion = n / sum(n)) %>% 
+  select(-n) %>% 
+  pivot_wider(names_from = sentiment, values_from = proportion) %>% 
+  pivot_longer(Negative:Neutral, names_to = "sentiment", values_to = "proportion") %>% 
+  ggplot(aes(x = proportion, y = Positive, color = abs(Positive - proportion))) +
+  geom_abline(lty = 2) +
+  geom_point(size = 2.5, alpha = 0.5) +
+  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
+  scale_x_log10(labels = percent_format()) +
+  scale_y_log10(labels = percent_format()) +
+  scale_color_gradient(limits = c(0, 0.001), 
+                       low = "darkslategray4", high = "gray75") +
+  facet_grid(sentiment ~ .) +
+  labs(x = NULL) +
+  theme(legend.position = "none")
+  
+  
+
 ```
 
 ## Slide with Plot
