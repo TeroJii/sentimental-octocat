@@ -19,6 +19,10 @@ library(janitor)
 library(skimr)
 library(tidytext)
 library(scales)
+library(textdata)
+library(RColorBrewer)
+library(wordcloud)
+library(reshape2)
 
 ## Set file paths
 here::i_am("text_analysis.Rmd")
@@ -198,7 +202,7 @@ tidy_df %>%
 
 ## Which words associate with different sentiments
 
-```{r}
+```{r, warning=FALSE}
 
 tidy_df %>% 
   count(sentiment, word) %>% 
@@ -216,16 +220,67 @@ tidy_df %>%
   scale_color_gradient(limits = c(0, 0.001), 
                        low = "darkslategray4", high = "gray75") +
   facet_grid(sentiment ~ .) +
-  labs(x = NULL) +
+  labs(x = "Negative (up) / Neutral (down)") +
   theme(legend.position = "none")
   
   
 
 ```
 
-## Slide with Plot
+## Positive/Negative words
 
-```{r pressure}
-plot(pressure)
+```{r}
+
+tidy_df %>% 
+  count(word, sentiment, sort = TRUE) %>%
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+  comparison.cloud(colors = c("gray20", "gray80"),
+                   max.words = 100)
+
 ```
+
+
+
+# Attaching sentiments to individual words
+
+## Sentiments from dictionaries
+
+* A number of readily available sentiment dictionaries are available, which help us attach emotion to single words
+
+> Dictionary-based methods find the total sentiment of a piece of text by adding up the individual sentiment scores for each word in the text.
+
+* Example ([AFINN](http://www2.imm.dtu.dk/pubdb/pubs/6010-full.html) dictionary by Finn Årup Nielsen):
+
+```{r}
+
+get_sentiments("afinn") %>% 
+  head(3)
+
+```
+
+## Attach sentiment to sentences
+
+```{r}
+
+tidy_df %>% 
+  # Add sentiment scores for words from afinn dictionary 
+  inner_join(get_sentiments("afinn")) %>% 
+  count(id, sentiment, value) %>% 
+  group_by(id, sentiment) %>% 
+  summarise(sentiment_score = sum(value*n)) %>% 
+  # Re-order sentiments for the plot
+  mutate(sentiment = factor(sentiment, levels = c("Positive", "Neutral", "Negative"))) %>% 
+  ggplot(aes(x = id, y = sentiment_score, fill = sentiment)) +
+  geom_col() +
+  ggtitle("Sentiments from AFINN dictionary by Finn Årup Nielsen") +
+  scale_fill_manual(values = brewer.pal(n = 3, name = "Set2")) +
+  labs(y = "Sentiment scores for sentences", x = "Sentence ID")
+
+```
+
+* Drawbacks such as many words are missing from this dictionary
+
+# n-grams instead of words
+
+
 
