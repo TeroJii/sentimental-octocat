@@ -1,0 +1,8 @@
+# Extracting and Analyzing Words
+
+
+## TF-IDF
+
+Term frequency (TF), inverse document frequency (IDF), and their product (TF-IDF) which describes the frequency of the term adjusted for how rarely it is used [@Silge2017], are all quantities which can be used for assessing the importance of a word in a passage of text.
+
+> The statistic tf-idf is intended to measure how important a word is to a document in a collection (or corpus) of documents, for example, to one novel in a collection of novels or to one website in a collection of websites. 
