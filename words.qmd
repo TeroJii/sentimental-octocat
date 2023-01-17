@@ -2,10 +2,31 @@
 
 ## Words as Tokens
 
-In order to analyze natural language, the raw text needs to be somehow transformed into a numeric format. 
+In order to analyze natural language, the raw text needs to be somehow transformed into a numeric format. One way to do this is to split passages of text into elements of one or more words. This transformation of text into smaller units is called tokenization.
 
+Let's test turning a few made-up movie review sentences into separate words.
 
-## TF-IDF
+```{r}
+library(tibble)
+library(tidytext)
+library(magrittr)
+
+# A few example sentences
+movie_comments <- tibble(id = 1:6,
+       text = c("The movie was great.",
+                "The movie was bad.",
+                "I didn't care for the movie.",
+                "The movie was not bad at all.",
+                "The beginning of the movie was lousy, but it turned out the be one of the best I've ever seen.",
+                "The movie was quite alright."))
+
+# Split sentences into separate words
+movie_comments %>% unnest_tokens(word, text)
+```
+
+The `unnest_tokens()` function also strips all the punctuation, white spaces etc., and turns all the words into lowercase.
+
+### TF-IDF
 
 Term frequency (TF), inverse document frequency (IDF), and their product (TF-IDF) which describes the frequency of the term adjusted for how rarely it is used [@Silge2017], are all quantities which can be used for assessing the importance of a word in a passage of text.
 
