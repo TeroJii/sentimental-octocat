@@ -4,10 +4,10 @@ Here I will add some brief notes about analyzing data in text format. The follow
 
 ## Some basic concepts related to handling text
 
-+ String
++ String: a data type consisting of a sequence of characters
 
 + Token: a meaningful unit of text such as a word, sentence, lines of text, paragraphs etc.
 
-+ Corpus
++ [Corpus](https://en.wikipedia.org/wiki/Text_corpus): In linguistics, a corpus (plural corpora) or text corpus is a language resource consisting of a large and structured set of texts (nowadays usually electronically stored and processed). In NLP context, corpus usually stores the text along with metadata.
 
-+ Document-term matrix
++ Document-term matrix: a matrix where each row presents one document (such as a book or article), each column represents one term, and each value states the number of appearances in of that term in the document [@Silge2017]

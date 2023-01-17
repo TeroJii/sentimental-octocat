@@ -11,7 +11,7 @@
     "href": "intro.html#some-basic-concepts-related-to-handling-text",
     "title": "1  Introduction",
     "section": "1.1 Some basic concepts related to handling text",
-    "text": "1.1 Some basic concepts related to handling text\n\nString\nToken: a meaningful unit of text such as a word, sentence, lines of text, paragraphs etc.\nCorpus\nDocument-term matrix\n\n\n\n\n\nHvitfeldt, E., and J. Silge. 2022. Supervised Machine Learning for Text Analysis in R. CRC Press. https://smltar.com/.\n\n\nSilge, J., and D. Robinson. 2017. Text Mining with R: A Tidy Approach. O’Reilly Media. https://www.tidytextmining.com/."
+    "text": "1.1 Some basic concepts related to handling text\n\nString: a data type consisting of a sequence of characters\nToken: a meaningful unit of text such as a word, sentence, lines of text, paragraphs etc.\nCorpus: In linguistics, a corpus (plural corpora) or text corpus is a language resource consisting of a large and structured set of texts (nowadays usually electronically stored and processed). In NLP context, corpus usually stores the text along with metadata.\nDocument-term matrix: a matrix where each row presents one document (such as a book or article), each column represents one term, and each value states the number of appearances in of that term in the document (Silge and Robinson 2017)\n\n\n\n\n\nHvitfeldt, E., and J. Silge. 2022. Supervised Machine Learning for Text Analysis in R. CRC Press. https://smltar.com/.\n\n\nSilge, J., and D. Robinson. 2017. Text Mining with R: A Tidy Approach. O’Reilly Media. https://www.tidytextmining.com/."
   },
   {
     "objectID": "words.html#words-as-tokens",
