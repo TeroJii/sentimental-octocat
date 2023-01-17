@@ -6,7 +6,7 @@ Here I will add some brief notes about analyzing data in text format. The follow
 
 + String
 
-+ Token
++ Token: a meaningful unit of text such as a word, sentence, lines of text, paragraphs etc.
 
 + Corpus
 

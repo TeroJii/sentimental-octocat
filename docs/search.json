@@ -4,19 +4,33 @@
     "href": "index.html",
     "title": "Learning to Fly",
     "section": "",
-    "text": "Preface\nThis is a template for documenting my learning experience in the spirit of literal programming."
+    "text": "Preface\nThis document is a tool to help me write down some key concepts that I come across as I’m learning to analyze data in text format. I want to document my learning experience and take some notes that I can re-visit if needed."
   },
   {
     "objectID": "intro.html#some-basic-concepts-related-to-handling-text",
     "href": "intro.html#some-basic-concepts-related-to-handling-text",
     "title": "1  Introduction",
     "section": "1.1 Some basic concepts related to handling text",
-    "text": "1.1 Some basic concepts related to handling text\n\nString\nToken\nCorpus\nDocument-term matrix\n\n\n\n\n\nHvitfeldt, E., and J. Silge. 2022. Supervised Machine Learning for Text Analysis in R. CRC Press. https://smltar.com/.\n\n\nSilge, J., and D. Robinson. 2017. Text Mining with R: A Tidy Approach. O’Reilly Media. https://www.tidytextmining.com/."
+    "text": "1.1 Some basic concepts related to handling text\n\nString\nToken: a meaningful unit of text such as a word, sentence, lines of text, paragraphs etc.\nCorpus\nDocument-term matrix\n\n\n\n\n\nHvitfeldt, E., and J. Silge. 2022. Supervised Machine Learning for Text Analysis in R. CRC Press. https://smltar.com/.\n\n\nSilge, J., and D. Robinson. 2017. Text Mining with R: A Tidy Approach. O’Reilly Media. https://www.tidytextmining.com/."
+  },
+  {
+    "objectID": "words.html#words-as-tokens",
+    "href": "words.html#words-as-tokens",
+    "title": "2  Extracting and Analyzing Words",
+    "section": "2.1 Words as Tokens",
+    "text": "2.1 Words as Tokens\nIn order to analyze natural language, the raw text needs to be somehow transformed into a numeric format."
+  },
+  {
+    "objectID": "words.html#tf-idf",
+    "href": "words.html#tf-idf",
+    "title": "2  Extracting and Analyzing Words",
+    "section": "2.2 TF-IDF",
+    "text": "2.2 TF-IDF\nTerm frequency (TF), inverse document frequency (IDF), and their product (TF-IDF) which describes the frequency of the term adjusted for how rarely it is used (Silge and Robinson 2017), are all quantities which can be used for assessing the importance of a word in a passage of text.\n\nThe statistic tf-idf is intended to measure how important a word is to a document in a collection (or corpus) of documents, for example, to one novel in a collection of novels or to one website in a collection of websites.\n\n\n\n\n\nSilge, J., and D. Robinson. 2017. Text Mining with R: A Tidy Approach. O’Reilly Media. https://www.tidytextmining.com/."
   },
   {
     "objectID": "summary.html",
     "href": "summary.html",
-    "title": "2  Summary",
+    "title": "3  Summary",
     "section": "",
     "text": "Summary here…"
   },

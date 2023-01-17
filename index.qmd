@@ -1,3 +1,3 @@
 # Preface {.unnumbered}
 
-This is a template for documenting my learning experience in the spirit of literal programming.
+This document is a tool to help me write down some key concepts that I come across as I'm learning to analyze data in text format. I want to document my learning experience and take some notes that I can re-visit if needed.

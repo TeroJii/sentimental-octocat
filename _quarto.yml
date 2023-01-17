@@ -9,7 +9,7 @@ book:
   chapters:
     - index.qmd
     - intro.qmd
-#    - words.qmd
+    - words.qmd
 #    - bigrams.qmd
     - summary.qmd
     - references.qmd

@@ -1,5 +1,9 @@
 # Extracting and Analyzing Words
 
+## Words as Tokens
+
+In order to analyze natural language, the raw text needs to be somehow transformed into a numeric format. 
+
 
 ## TF-IDF
 
