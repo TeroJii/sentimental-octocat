@@ -207,6 +207,9 @@ tidy_df %>%
 
 tidy_df %>% 
   count(word, sentiment, sort = TRUE) %>%
+  group_by(sentiment) %>%
+  # twenty most common words per sentiment
+  slice(1:20) %>% 
   acast(word ~ sentiment, value.var = "n", fill = 0) %>%
   comparison.cloud(colors = brewer.pal(n = 3, "Pastel1"),
                    max.words = 60)
@@ -281,7 +284,53 @@ tidy_df %>%
 
 * Drawbacks such as many words are missing from this dictionary
 
+* Sentiments depend on the context:
+
+> Tero likes to **share** with his friends.
+> The OmniCorp **share** went into sharp decline.
+
+## TF-IDF
+
+```{r}
+
+sentiments_td_idf <- tidy_df %>%
+  group_by(sentiment) %>% 
+  count(word) %>%
+  #filter out numerics
+  filter(!grepl(pattern = "[0-9]+", x = word)) %>%
+  bind_tf_idf(word, sentiment, n)
+
+sentiments_td_idf %>% 
+  group_by(sentiment) %>% 
+  slice_max(tf_idf, n = 5) %>%
+  ungroup() %>%
+  ggplot(aes(x = tf_idf, y = fct_reorder(word, tf_idf), fill = sentiment)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~sentiment, ncol = 1, scales = "free") +
+  labs(x = "tf-idf", y = NULL)
+```
+
+
 # n-grams instead of words
 
+## Bigrams
 
+
+# Extra slides
+
+## Numeric "words" by sentiment
+
+```{r}
+## Numeric information by sentiment
+tidy_df %>%
+  group_by(sentiment) %>% 
+  count(word) %>%
+  #filter out numerics
+  filter(grepl(pattern = "[0-9]+", x = word)) %>%
+  group_by(sentiment) %>% 
+  slice(1:10) %>% 
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+  comparison.cloud(colors = brewer.pal(n = 3, "Pastel1"))
+
+```
 
