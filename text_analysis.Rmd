@@ -34,7 +34,7 @@ theme_set(theme_minimal())
 
 ## Data 
 
-* The data contains 266 sentences which have been assessed as being `positive`, `negative` or `neutral`.
+* The data contains 266 sentences written in English which have been assessed as being `positive`, `negative` or `neutral`.
 
 * We want to explore the data and see if it is useful for sentiment analysis.
 
