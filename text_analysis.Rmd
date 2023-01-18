@@ -200,10 +200,10 @@ tidy_df %>%
 ```
 
 
-## Which words associate with different sentiments
+## Words vs. different sentiments
 
 
-```{r, fig.height=8, fig.width=10, warning=FALSE}
+```{r, fig.height=7, fig.width=8, warning=FALSE}
 
 tidy_df %>% 
   count(word, sentiment, sort = TRUE) %>%
