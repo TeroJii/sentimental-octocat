@@ -23,6 +23,7 @@ library(textdata)
 library(RColorBrewer)
 library(wordcloud)
 library(reshape2)
+library(tidymodels)
 
 ## Set file paths
 here::i_am("text_analysis.Rmd")
@@ -310,10 +311,47 @@ sentiments_td_idf %>%
   labs(x = "tf-idf", y = NULL)
 ```
 
+## Simple model with the TF-IDF
+
+```{r}
+
+# set.seed(123)
+# # make 80/20 train/test split
+# # Stratify according to sentiment
+# # remove one hot encoding
+# split <- initial_split(select(text_df, -c("positive", "negative", "neutral")), prop = 0.8, strata = "sentiment")
+# 
+# train_data <- training(split)
+# test_data <- testing(split)
+# 
+# feature_set <- feature_set(text)
+# 
+# text_df %>% head()
+  
+
+```
+
+
 
 # n-grams instead of words
 
 ## Bigrams
+
+## Test/train-split
+
+```{r}
+
+# Make test/train split 20/80
+# Same fraction of sentiments in both sets
+text_split <- initial_split(text_df, prop = 0.8, strata = sentiment)
+
+text_train <- training(text_split)
+text_test <- testing(text_split)
+
+dim(text_train)
+dim(text_test)
+```
+
 
 
 # Extra slides
