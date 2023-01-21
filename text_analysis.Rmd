@@ -559,7 +559,7 @@ sparse_bp <- default_recipe_blueprint(composition = "dgCMatrix")
 
 
 multi_lasso_wf <- workflow() %>%
-  add_recipe(d_sentiment_rec, blueprint = sparse_bp) %>%
+  add_recipe(sentiment_rec, blueprint = sparse_bp) %>%
   add_model(multi_spec)
 
 multi_lasso_wf
@@ -594,10 +594,11 @@ best_acc
 
 multi_lasso_rs %>%
   collect_predictions() %>%
-  filter(penalty == best_acc$penalty) %>%
-  filter(id == "Fold01") %>%
+  filter(penalty == best_acc$penalty[1]) %>%
+  filter(id == "Fold1") %>% 
   conf_mat(sentiment, .pred_class) %>%
-  autoplot(type = "heatmap")
+  autoplot(type = "heatmap") +
+  ggtitle("Example confusion matrix for Fold 1")
 
 ```
 
