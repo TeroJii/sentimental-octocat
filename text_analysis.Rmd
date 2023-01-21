@@ -439,6 +439,21 @@ bigrams_separated %>%
 
 ## LDA for sentences
 
+* modify sentences to Document Term Matrix
+
+```{r}
+## NEEDS FIXING
+
+# 
+# # create document term matrix
+# #sentences_dtm <- tidy_df %>% 
+# tidy_df %>% 
+#   count(id, sentiment, word) %>% 
+#   cast_dtm(document = id, term = word, value = count)
+#   
+```
+
+
 # Classification
 
 ## Test/train-split
