@@ -9,6 +9,14 @@
     ]
   },
   "Packages": {
+    "BH": {
+      "Package": "BH",
+      "Version": "1.78.0-0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "4e348572ffcaa2fb1e610e7a941f6f3a",
+      "Requirements": []
+    },
     "DBI": {
       "Package": "DBI",
       "Version": "1.1.3",
@@ -61,6 +69,14 @@
       "Requirements": [
         "lattice"
       ]
+    },
+    "NLP": {
+      "Package": "NLP",
+      "Version": "0.2-1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "94b0a21c13933f61cf6272a192964624",
+      "Requirements": []
     },
     "R6": {
       "Package": "R6",
@@ -1082,6 +1098,14 @@
         "vctrs"
       ]
     },
+    "modeltools": {
+      "Package": "modeltools",
+      "Version": "0.2-23",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "f5a957c02222589bdf625a67be68b2a9",
+      "Requirements": []
+    },
     "munsell": {
       "Package": "munsell",
       "Version": "0.5.0",
@@ -1624,6 +1648,14 @@
         "vctrs"
       ]
     },
+    "slam": {
+      "Package": "slam",
+      "Version": "0.1-50",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "e25793551cbdb843154152e5ee88cbd6",
+      "Requirements": []
+    },
     "slider": {
       "Package": "slider",
       "Version": "0.3.0",
@@ -1879,6 +1911,20 @@
         "xfun"
       ]
     },
+    "tm": {
+      "Package": "tm",
+      "Version": "0.7-10",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "e933a5a2877f14b177332fe60b314eae",
+      "Requirements": [
+        "BH",
+        "NLP",
+        "Rcpp",
+        "slam",
+        "xml2"
+      ]
+    },
     "tokenizers": {
       "Package": "tokenizers",
       "Version": "0.3.0",
@@ -1889,6 +1935,18 @@
         "Rcpp",
         "SnowballC",
         "stringi"
+      ]
+    },
+    "topicmodels": {
+      "Package": "topicmodels",
+      "Version": "0.2-13",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "7e3ab2b8e398c0b6dc0dc26b09f364e3",
+      "Requirements": [
+        "modeltools",
+        "slam",
+        "tm"
       ]
     },
     "tune": {
