@@ -414,6 +414,16 @@ bigram_tf_idf %>%
 
 ```
 
+## Most common negations
+
+```{r}
+
+bigrams_separated %>%
+  filter(word1 == "not") %>%
+  count(word1, word2, sort = TRUE)
+
+```
+
 
 
 ## Latent Dirichlet Allocation
