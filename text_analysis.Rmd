@@ -390,6 +390,31 @@ text_df %>%
 
 ```
 
+## 
+
+```{r}
+
+# Unite bigrams after removing stopwords
+bigrams_united <- bigrams_filtered %>%
+  unite(bigram, word1, word2, sep = " ")
+
+# Count TF-IDF for bigrams 
+bigram_tf_idf <- bigrams_united %>%
+  count(sentiment, bigram) %>%
+  bind_tf_idf(bigram, sentiment, n) %>%
+  arrange(desc(tf_idf))
+
+bigram_tf_idf %>% 
+  group_by(sentiment) %>% 
+  arrange(desc(tf_idf)) %>%
+  top_n(3) %>% 
+  ggplot(aes(x = tf_idf, y = bigram, fill = sentiment)) +
+  geom_col() +
+  facet_grid(sentiment~., scales = "free")
+
+```
+
+
 
 ## Latent Dirichlet Allocation
 
