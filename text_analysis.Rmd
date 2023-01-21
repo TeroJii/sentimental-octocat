@@ -571,13 +571,16 @@ multi_lasso_wf
 
 # Regularization parameter lambda
 smaller_lambda <- grid_regular(penalty(range = c(-5, 0)), levels = 20)
+lambda_grid <- grid_regular(penalty(), levels = 30)
+
 
 
 set.seed(2020)
 multi_lasso_rs <- tune_grid(
   multi_lasso_wf,
   sentiment_folds,
-  grid = smaller_lambda,
+#  grid = smaller_lambda,
+  grid = lambda_grid,
   control = control_resamples(save_pred = TRUE)
 )
 
@@ -586,7 +589,24 @@ best_acc <- multi_lasso_rs %>%
   show_best("accuracy")
 
 best_acc
+
+best_acc2 <- multi_lasso_rs %>%
+  show_best("roc_auc")
+
+best_acc2
 ```
+
+## Choosing the best value for lambda
+
+```{r}
+
+autoplot(multi_lasso_rs) +
+  geom_vline(xintercept = best_acc$penalty[1], color = "red") +
+  ggtitle("Regularization parameter with best accuracy")
+
+```
+
+
 
 ## Confusion matrix
 
@@ -602,6 +622,19 @@ multi_lasso_rs %>%
 
 ```
 
+## Confusion matrix (best ROC AUC)
+
+
+```{r}
+multi_lasso_rs %>%
+  collect_predictions() %>%
+  filter(penalty == best_acc2$penalty[1]) %>%
+  filter(id == "Fold1") %>% 
+  conf_mat(sentiment, .pred_class) %>%
+  autoplot(type = "heatmap") +
+  ggtitle("Example confusion matrix for Fold 1")
+
+```
 
 
 # Extra slides
