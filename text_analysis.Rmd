@@ -25,6 +25,7 @@ library(wordcloud)
 library(reshape2)
 library(tidymodels)
 library(topicmodels)
+library(textrecipes)
 
 ## Set file paths
 here::i_am("text_analysis.Rmd")
@@ -471,6 +472,70 @@ dim(text_train)
 dim(text_test)
 ```
 
+## Building a classification model
+
+```{r}
+# a recipe for classification
+sentiment_rec <-
+  recipe(sentiment ~ sentence, data = text_train)
+
+## Add processing steps
+sentiment_rec <- sentiment_rec %>% 
+  # Extract words as tokens
+  step_tokenize(sentence) %>% 
+  # Only keep the 500 most common tokens
+  step_tokenfilter(sentence, max_tokens = 100) %>%
+  # Calculate TF-IDF
+  step_tfidf(sentences)
+
+## Add pre-processing steps to a workflow
+## Ensures that test data will undergo similar pre-treatment steps without data leakage
+sentiment_wf <- workflow() %>%
+  add_recipe(sentiment_rec)
+
+
+```
+
+## 5-fold cross-validation
+
+```{r}
+
+## k-fold cross-validation
+set.seed(234)
+sentiment_folds <- vfold_cv(text_train, v = 5)
+
+sentiment_folds
+
+```
+
+
+
+## Null model
+
+```{r}
+
+# null_classification <- null_model() %>%
+#   set_engine("parsnip") %>%
+#   set_mode("classification")
+# 
+# null_rs <- workflow() %>%
+#   add_recipe(sentiment_rec) %>%
+#   add_model(null_classification) %>%
+#   fit_resamples(
+#     sentiment_folds
+#   )
+# 
+# null_rs %>%
+#   collect_metrics()
+
+```
+
+
+```{r}
+
+#complaints <- read_csv("data/complaints.csv")
+
+```
 
 
 # Extra slides
