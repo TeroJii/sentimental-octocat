@@ -590,10 +590,10 @@ best_acc <- multi_lasso_rs %>%
 
 best_acc
 
-best_acc2 <- multi_lasso_rs %>%
+best_auc <- multi_lasso_rs %>%
   show_best("roc_auc")
 
-best_acc2
+best_auc
 ```
 
 ## Choosing the best value for lambda
@@ -628,7 +628,7 @@ multi_lasso_rs %>%
 ```{r}
 multi_lasso_rs %>%
   collect_predictions() %>%
-  filter(penalty == best_acc2$penalty[1]) %>%
+  filter(penalty == best_auc$penalty[1]) %>%
   filter(id == "Fold1") %>% 
   conf_mat(sentiment, .pred_class) %>%
   autoplot(type = "heatmap") +
@@ -636,7 +636,23 @@ multi_lasso_rs %>%
 
 ```
 
+
 ## We should try removing numbers from the model
+
+
+## Capturing ambiguity
+
+* Show probabilities for different sentiments
+
+```{r}
+
+multi_lasso_rs %>% 
+  collect_predictions() %>% 
+  # tuning parameter with best accuracy
+  filter(penalty == best_acc$penalty[1])
+
+```
+
 
 
 # Extra slides
@@ -669,3 +685,53 @@ str(bake(sentiment_obj, text_train))
 
 ```
 
+# Downsampling
+
+## Test model with downsampling
+
+* Maybe helps to figth imbalanced data
+
+```{r}
+
+multi_lasso_wf <- workflow() %>%
+  add_recipe(d_sentiment_rec, blueprint = sparse_bp) %>%
+  add_model(multi_spec)
+
+multi_lasso_wf
+
+
+set.seed(2020)
+multi_lasso_rs <- tune_grid(
+  multi_lasso_wf,
+  sentiment_folds,
+#  grid = smaller_lambda,
+  grid = lambda_grid,
+  control = control_resamples(save_pred = TRUE)
+)
+
+
+best_acc <- multi_lasso_rs %>%
+  show_best("accuracy")
+
+best_acc
+
+best_auc <- multi_lasso_rs %>%
+  show_best("roc_auc")
+
+best_auc
+
+```
+
+## With downsampling
+
+```{r}
+
+multi_lasso_rs %>%
+  collect_predictions() %>%
+  filter(penalty == best_auc$penalty[1]) %>%
+  filter(id == "Fold1") %>% 
+  conf_mat(sentiment, .pred_class) %>%
+  autoplot(type = "heatmap") +
+  ggtitle("Example confusion matrix for Fold 1")
+
+```
