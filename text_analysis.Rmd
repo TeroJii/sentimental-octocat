@@ -26,6 +26,10 @@ library(reshape2)
 library(tidymodels)
 library(topicmodels)
 library(textrecipes)
+# methods for imbalanced data sets
+library(themis)
+library(hardhat)
+library(glmnet)
 
 ## Set file paths
 here::i_am("text_analysis.Rmd")
@@ -532,10 +536,71 @@ null_rs %>%
 
 ```
 
+## First model (LASSO)
+
 
 ```{r}
 
+## Add down sampling to sentiments recipe
+d_sentiment_rec <- sentiment_rec %>% 
+  step_downsample(sentiment)
+
+d_sentiment_rec
+
+multi_spec <- multinom_reg(penalty = tune(), mixture = 1) %>%
+  set_mode("classification") %>%
+  set_engine("glmnet")
+
+multi_spec
+
+### ----
+
+sparse_bp <- default_recipe_blueprint(composition = "dgCMatrix")
+
+
+multi_lasso_wf <- workflow() %>%
+  add_recipe(d_sentiment_rec, blueprint = sparse_bp) %>%
+  add_model(multi_spec)
+
+multi_lasso_wf
 ```
+
+## Tuning parameters
+
+```{r}
+
+# Regularization parameter lambda
+smaller_lambda <- grid_regular(penalty(range = c(-5, 0)), levels = 20)
+
+
+set.seed(2020)
+multi_lasso_rs <- tune_grid(
+  multi_lasso_wf,
+  sentiment_folds,
+  grid = smaller_lambda,
+  control = control_resamples(save_pred = TRUE)
+)
+
+
+best_acc <- multi_lasso_rs %>%
+  show_best("accuracy")
+
+best_acc
+```
+
+## Confusion matrix
+
+```{r}
+
+multi_lasso_rs %>%
+  collect_predictions() %>%
+  filter(penalty == best_acc$penalty) %>%
+  filter(id == "Fold01") %>%
+  conf_mat(sentiment, .pred_class) %>%
+  autoplot(type = "heatmap")
+
+```
+
 
 
 # Extra slides
