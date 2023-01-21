@@ -488,7 +488,7 @@ sentiment_rec <- sentiment_rec %>%
   # Extract words as tokens
   step_tokenize(sentence) %>% 
   # Only keep the 500 most common tokens
-  step_tokenfilter(sentence, max_tokens = 100) %>%
+  step_tokenfilter(sentence, max_tokens = 1000) %>%
   # Calculate TF-IDF
   step_tfidf(sentence)
 
@@ -636,6 +636,8 @@ multi_lasso_rs %>%
 
 ```
 
+## We should try removing numbers from the model
+
 
 # Extra slides
 
@@ -652,6 +654,18 @@ tidy_df %>%
   slice(1:10) %>% 
   acast(word ~ sentiment, value.var = "n", fill = 0) %>%
   comparison.cloud(colors = brewer.pal(n = 3, "Pastel1"))
+
+```
+
+
+## What does the Lasso model eat
+
+```{r}
+
+sentiment_obj <- sentiment_rec %>%
+  prep()
+   
+str(bake(sentiment_obj, text_train))
 
 ```
 
