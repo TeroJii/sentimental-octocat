@@ -486,7 +486,7 @@ sentiment_rec <- sentiment_rec %>%
   # Only keep the 500 most common tokens
   step_tokenfilter(sentence, max_tokens = 100) %>%
   # Calculate TF-IDF
-  step_tfidf(sentences)
+  step_tfidf(sentence)
 
 ## Add pre-processing steps to a workflow
 ## Ensures that test data will undergo similar pre-treatment steps without data leakage
@@ -512,28 +512,28 @@ sentiment_folds
 
 ## Null model
 
+* Performance when predicting the largest sentiment for all sentences
+
 ```{r}
 
-# null_classification <- null_model() %>%
-#   set_engine("parsnip") %>%
-#   set_mode("classification")
-# 
-# null_rs <- workflow() %>%
-#   add_recipe(sentiment_rec) %>%
-#   add_model(null_classification) %>%
-#   fit_resamples(
-#     sentiment_folds
-#   )
-# 
-# null_rs %>%
-#   collect_metrics()
+null_classification <- null_model() %>%
+  set_engine("parsnip") %>%
+  set_mode("classification")
+
+null_rs <- workflow() %>%
+  add_recipe(sentiment_rec) %>%
+  add_model(null_classification) %>%
+  fit_resamples(
+    sentiment_folds
+  )
+
+null_rs %>%
+  collect_metrics()
 
 ```
 
 
 ```{r}
-
-#complaints <- read_csv("data/complaints.csv")
 
 ```
 
