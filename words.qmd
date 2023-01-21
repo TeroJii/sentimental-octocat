@@ -34,5 +34,9 @@ Term frequency (TF), inverse document frequency (IDF), and their product (TF-IDF
 
 
 $$
-IDF(\text{term}) = \ln \left( \frac{n_{\text{documents}}}{n_{documents containing term}} \right) 
+IDF(\text{term}) = \ln \left( \frac{n_{\text{documents}}}{n_{\text{documents containing term}}} \right) 
 $$
+
+
+## n-grams
+
