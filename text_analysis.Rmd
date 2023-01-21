@@ -380,6 +380,15 @@ bigram_counts
 
 ```
 
+## Finding weird combinations
+
+```{r}
+
+text_df %>% 
+  filter(grepl(pattern = "sof", x = sentence, ignore.case =TRUE)) %>% 
+  select(sentence)
+
+```
 
 
 ## Latent Dirichlet Allocation
