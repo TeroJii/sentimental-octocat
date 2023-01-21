@@ -177,8 +177,11 @@ print(text_df$sentence[1])
 
 ## Removing stopwords
 
+* Note that there might be big differences between different precompiled stopword lists
+
 ```{r}
 
+# Get a dictionary of common stopwords which ship with tidytext
 data("stop_words")
 
 (tidy_df <- tidy_df %>% 
@@ -336,6 +339,53 @@ sentiments_td_idf %>%
 # n-grams instead of words
 
 ## Bigrams
+
+* Bigrams are two words that appear in succession
+
+* Most of the common bigrams are unsurprizingly composed of stopwords
+
+```{r}
+
+# Find bigrams
+bigrams_df <- text_df %>% 
+  unnest_tokens(bigram, sentence, token = "ngrams", n = 2) %>%
+  filter(!is.na(bigram))
+
+```
+
+
+```{r}
+
+bigrams_df %>% 
+  count(bigram, sort = TRUE)
+
+```
+
+## Removing stopwords from bigrams
+
+```{r}
+
+bigrams_separated <- bigrams_df %>%
+  separate(bigram, c("word1", "word2"), sep = " ")
+
+bigrams_filtered <- bigrams_separated %>%
+  filter(!word1 %in% stop_words$word) %>%
+  filter(!word2 %in% stop_words$word)
+
+# new bigram counts:
+bigram_counts <- bigrams_filtered %>% 
+  count(word1, word2, sort = TRUE)
+
+bigram_counts
+
+```
+
+
+
+## Latent Dirichlet Allocation
+
+
+# Classification
 
 ## Test/train-split
 
