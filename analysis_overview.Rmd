@@ -648,8 +648,6 @@ conf_mat_resampled(multi_lasso_rs, tidy = FALSE, parameters = best_auc %>% filte
 
 ## Capturing ambiguity
 
-* Show probabilities for different sentiments
-
 ```{r, fig.height=6.5, fig.width=8}
 
 # Lambda with best performance
@@ -704,7 +702,7 @@ tidy_df %>%
 
 ```
 
-## Finalizing the model 
+# Finalizing the model 
 
 ## Finalizing parameters 
 
@@ -730,30 +728,38 @@ fitted_lasso <- fit(final_lasso, text_train)
 final_fitted <- last_fit(final_lasso, text_split)
 
 collect_metrics(final_fitted) %>% 
+  select(-.config) %>% 
   knitr::kable(caption = "Model performance on test set")
 ```
 
 
-## Interpret results - 1 
+## Interpret results 
 
-```{r}
-## Print out terms with large coefficient 
-fitted_lasso %>%
+```{r, fig.height=6.5}
+## Comparing terms with large coefficients
+
+pos_coeffs <- fitted_lasso %>%
   extract_fit_parsnip() %>%
   tidy() %>%
   arrange(-estimate) %>% 
-  head(8) %>% 
-  knitr::kable(caption = "Terms with large effect on the model")
-```
+  head(10)
 
-## Interpret results - 2 
-
-```{r}
-## Print out terms with large coefficient 
-fitted_lasso %>%
+neg_coeffs <- fitted_lasso %>%
   extract_fit_parsnip() %>%
   tidy() %>%
   arrange(estimate) %>% 
-  head(8) %>% 
-  knitr::kable(caption = "Terms with large effect on the model")
+  head(10)
+
+## Visualize words with largest (plus/minus) coefficients
+bind_rows(pos_coeffs, neg_coeffs) %>% 
+  mutate(term = gsub(pattern = "tfidf_sentence_", replacement = "", x = term)) %>% 
+  mutate(term = factor(term)) %>% 
+  rename(tf_idf = term) %>% 
+  mutate(class = factor(class, levels = c("Positive", "Negative", "Neutral"))) %>%
+  ggplot(aes(x = estimate, y = fct_reorder(tf_idf, estimate), fill = class)) +
+  geom_col() +
+  scale_fill_manual(values = brewer.pal(n = 3, name = "Set2")) +
+  labs(y = "TF-IDF")
+
+
 ```
