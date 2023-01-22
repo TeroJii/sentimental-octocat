@@ -257,6 +257,7 @@ tidy_df %>%
                        low = "darkslategray4", high = "gray75") +
   facet_grid(sentiment ~ .) +
   labs(x = "Proportion in Negative (top) / Neutral (bottom)", y = "Proportion in Positive") +
+  theme_bw() +
   theme(legend.position = "none")
 
 ```
@@ -266,7 +267,7 @@ tidy_df %>%
 
 * A number of readily available sentiment dictionaries are available, which help us attach emotion to single words
 
-> Dictionary-based methods find the total sentiment of a piece of text by adding up the individual sentiment scores for each word in the text.
+* In dictionary-based methods the total sentiment for a piece of text is determined by adding up the individual sentiment scores for each word in the text
 
 * Example ([AFINN](http://www2.imm.dtu.dk/pubdb/pubs/6010-full.html) dictionary by Finn Årup Nielsen):
 
@@ -280,7 +281,7 @@ get_sentiments("afinn") %>%
 
 ## Attach sentiment to sentences
 
-```{r, fig.height = 4, fig.width = 8}
+```{r, fig.height = 4, fig.width = 8, message=FALSE}
 
 tidy_df %>% 
   # Add sentiment scores for words from afinn dictionary 
@@ -307,3 +308,6 @@ tidy_df %>%
 > Tero likes to **share** with his friends.
 
 > The OmniCorp **share** went into sharp decline.
+
+# Moving beyond word counts
+
