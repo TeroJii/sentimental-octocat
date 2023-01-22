@@ -128,7 +128,7 @@ no_doubles_df <- text_df %>%
 no_doubles_df %>% 
   group_by(sentiment) %>% 
   summarise(n = n()) %>% 
-  mutate(prercentage = 100*n/length(no_doubles_df$sentiment)) %>% 
+  mutate(percentage = 100*n/length(no_doubles_df$sentiment)) %>% 
   knitr::kable(digits = 2, caption = "The sentiment labels for the example sentences (duplicates removed)")
 
 
@@ -142,3 +142,16 @@ if(params$filter_duplicates){
 
 ```
 
+# Basics of analyzing text
+
+## How do we make text suitable for ML?
+
+* Human readable text needs to be processed before it can be fed to a machine learning model
+
+* **Tokenization** is the process of splitting text input into smaller (meaningful) units (**tokens**), such as letters, words, sentences, etc.
+
+* Some modifications, such as transforming words into lowercase, are usually implemented to make sure the model understands that, e.g. `Cabin` and `cabin` are the same concept
+
+* Once we have extracted the *tokens* from raw text, we can analyze things such as how often they appear
+
+## Most common words
