@@ -536,6 +536,27 @@ null_rs %>%
 
 ```
 
+## Confusion matrix null model
+
+```{r}
+
+# "Train" null model with entire train data and plot confusion matrix
+workflow() %>%
+  add_recipe(sentiment_rec) %>%
+  add_model(null_classification) %>%
+  # Fit null model for entire train data
+  fit(data = text_train) %>% 
+  # find predictions
+  augment(text_train) %>%  
+  mutate(sentiment = factor(sentiment, levels = c("Positive", "Neutral", "Negative")),
+         .pred_class = factor(.pred_class, levels = c("Positive", "Neutral", "Negative"))) %>% 
+  conf_mat(sentiment, .pred_class) %>% 
+  autoplot("heatmap") +
+  ggtitle("Null model predictions on the train data")
+
+```
+
+
 ## First model (LASSO)
 
 
@@ -639,6 +660,11 @@ multi_lasso_rs %>%
 
 ## We should try removing numbers from the model
 
+* Remove stopwords
+
+* Remove numerals
+
+* Remove custom stopwords
 
 ## Capturing ambiguity
 
