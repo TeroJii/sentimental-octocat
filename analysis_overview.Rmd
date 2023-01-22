@@ -311,3 +311,48 @@ tidy_df %>%
 
 # Moving beyond word counts
 
+## Utilizing token frequency
+
+* Term frequency (TF): How frequently a word (etc.) appears in a document
+
+* Inverse document frequency (IDF): decreases the weight for commonly used words and increases the weight for words that are not used very much in a collection of documents:
+
+$$
+IDF(\text{term}) = \ln \left( \frac{n_{\text{documents}}}{n_{\text{documents containing term}}} \right) 
+$$
+
+* TF-IDF: The product of TF and IDF is a statistic intended to measure how important a word is to a collection of text documents. 
+
+* E.g. a word which only appears in few sentences, but many times will get a higher TF-IDF, whereas words appearing in all sentences get a zero value
+
+## High TF-IDF words by sentiment
+
+```{r, fig.height = 6.5}
+
+# Calculate TF-IDF for words
+sentiments_td_idf <- tidy_df %>%
+  group_by(sentiment) %>% 
+  count(word) %>%
+  #filter out numerics
+  filter(!grepl(pattern = "[0-9]+", x = word)) %>%
+  bind_tf_idf(word, sentiment, n)
+
+# Visualize results
+sentiments_td_idf %>% 
+  group_by(sentiment) %>% 
+  slice_max(tf_idf, n = 5) %>%
+  ungroup() %>%
+  # Re-order sentiments for the plot
+  mutate(sentiment = factor(sentiment, levels = c("Positive", "Negative", "Neutral"))) %>%
+  ggplot(aes(x = tf_idf, y = fct_reorder(word, tf_idf), fill = sentiment)) +
+  geom_col(show.legend = FALSE) +
+  scale_fill_manual(values = brewer.pal(n = 3, name = "Set2")) +
+  facet_wrap(~sentiment, ncol = 1, scales = "free") +
+  labs(x = "tf-idf", y = NULL) +
+  ggtitle("Words with highest TF-IDF by sentiment", subtitle = "Numbers have been removed")
+  
+```
+
+# n-grams
+
+## Title
