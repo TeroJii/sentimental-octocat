@@ -448,6 +448,7 @@ bigram_tf_idf %>%
 
 # Make test/train split 20/80
 # Same fraction of sentiments in both sets
+set.seed(22012023)
 text_split <- initial_split(text_df, prop = 0.8, strata = sentiment)
 
 text_train <- training(text_split)
@@ -455,8 +456,38 @@ text_test <- testing(text_split)
 
 ```
 
+* If we use all our data to train a ML model, then we can not objectively test model performance. High risk for overfitting.
 
 * Test/train-split to evaluate models:
 
     - Here 80/20 split, so that the train set contains `r length(text_train$sentence)` and the test set `r length(text_test$sentence)` sentences
     
+    - Cross-validation is used to combat overfitting in the training phase
+    
+* A useful model should be able to outperform a so-called *null model*, which just classifies all observations to the most commonly observed class (`Positive` in this case)
+
+* We will use the `sentence` column in the data to try to predict `sentiment`
+
+```{r model-preparations}
+
+# a recipe for classification
+sentiment_rec <-
+  recipe(sentiment ~ sentence, data = text_train)
+
+## Add processing steps
+sentiment_rec <- sentiment_rec %>% 
+  # Extract words as tokens
+  step_tokenize(sentence) %>% 
+  # Only keep the 1000 most common tokens
+  step_tokenfilter(sentence, max_tokens = 1000) %>%
+  # Calculate TF-IDF
+  step_tfidf(sentence)
+
+## Add pre-processing steps to a workflow
+## Ensures that test data will undergo similar pre-treatment steps without data leakage
+sentiment_wf <- workflow() %>%
+  add_recipe(sentiment_rec)
+
+
+```
+
