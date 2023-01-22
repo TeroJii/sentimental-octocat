@@ -489,5 +489,61 @@ sentiment_wf <- workflow() %>%
   add_recipe(sentiment_rec)
 
 
+### 5-fold cross validation
+## k-fold cross-validation
+set.seed(234)
+sentiment_folds <- vfold_cv(text_train, v = 5)
+
+```
+
+## Baseline performance
+
+```{r}
+
+# null classification model
+null_classification <- null_model() %>%
+  set_engine("parsnip") %>%
+  set_mode("classification")
+
+## evaluate 5-fold CV
+null_rs <- workflow() %>%
+  add_recipe(sentiment_rec) %>%
+  add_model(null_classification) %>%
+  fit_resamples(
+    sentiment_folds
+  )
+
+```
+
+
+```{r, fig.height=6.5}
+
+# "Train" null model with entire train data and plot confusion matrix
+workflow() %>%
+  add_recipe(sentiment_rec) %>%
+  add_model(null_classification) %>%
+  # Fit null model for entire train data
+  fit(data = text_train) %>% 
+  # find predictions
+  augment(text_train) %>%  
+  mutate(sentiment = factor(sentiment, levels = c("Positive", "Neutral", "Negative")),
+         .pred_class = factor(.pred_class, levels = c("Positive", "Neutral", "Negative"))) %>% 
+  conf_mat(sentiment, .pred_class) %>% 
+  autoplot("heatmap") +
+  ggtitle("Null model predictions on the train data")
+
+
+```
+
+## Null model metrics
+
+```{r}
+
+## Collect performace
+null_rs %>%
+  collect_metrics() %>% 
+  select(-.config) %>% 
+  knitr::kable(caption = "Performace metrics of the null model")
+
 ```
 
