@@ -33,17 +33,52 @@ library(glmnet)
 library(stopwords)
 
 ## Set file paths
-here::i_am("text_analysis.Rmd")
+here::i_am("analysis_overview.Rmd")
 
 ## Set graphical theme
 theme_set(theme_minimal())
 
 ```
 
+```{r data-download}
+
+## Get the data
+text_df <- readxl::read_excel(path = here("data", "sentences_with_sentiment.xlsx")) %>% 
+  # move sentiments under same column
+  mutate(sentiment = case_when(
+    Positive == 1 ~ "Positive",
+    Negative == 1 ~ "Negative",
+    Neutral == 1 ~ "Neutral",
+    # in case of missing sentiment
+    TRUE ~ "missing"
+  ), .after = ID) %>% 
+  # all column names to lowercase
+  janitor::clean_names()
+
+
+```
+
+
 ## Introduction
 
-* Our task is to analyze document containing 266 sentences written in English
+* Our task is to analyze document containing `r length(text_df$sentence)` sentences written in English
 
 * The sentences have been labelled by Subject Matter Experts (SMEs) as being `positive`, `negative` or `neutral` in tone
 
-* We want to explore the data and see if it would be possible to automate labelling task
+* We want to explore the data and see if it would be possible to automate labeling task
+
+```{r}
+# Print out label frequencies to show class (im)balance
+text_df %>% 
+  group_by(sentiment) %>% 
+  summarise(n = n()) %>% 
+  mutate(prercentage = 100*n/length(text_df$sentiment)) %>% 
+  knitr::kable(digits = 2, caption = "The sentiment labels for the example sentences")
+
+```
+
+
+# Exploring the data
+
+## Example sentences
+
