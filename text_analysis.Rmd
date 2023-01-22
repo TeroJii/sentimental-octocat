@@ -283,10 +283,11 @@ tidy_df %>%
   group_by(id, sentiment) %>% 
   summarise(sentiment_score = sum(value*n)) %>% 
   # Re-order sentiments for the plot
-  mutate(sentiment = factor(sentiment, levels = c("Positive", "Neutral", "Negative"))) %>% 
+  mutate(sentiment = factor(sentiment, levels = c("Positive", "Negative", "Neutral"))) %>% 
   ggplot(aes(x = id, y = sentiment_score, fill = sentiment)) +
   geom_col() +
   ggtitle("Sentiments from AFINN dictionary by Finn Årup Nielsen") +
+  # Change plot colors
   scale_fill_manual(values = brewer.pal(n = 3, name = "Set2")) +
   labs(y = "Sentiment scores for sentences", x = "Sentence ID")
 
@@ -314,30 +315,13 @@ sentiments_td_idf %>%
   group_by(sentiment) %>% 
   slice_max(tf_idf, n = 5) %>%
   ungroup() %>%
+  # Re-order sentiments for the plot
+  mutate(sentiment = factor(sentiment, levels = c("Positive", "Negative", "Neutral"))) %>%
   ggplot(aes(x = tf_idf, y = fct_reorder(word, tf_idf), fill = sentiment)) +
   geom_col(show.legend = FALSE) +
+  scale_fill_manual(values = brewer.pal(n = 3, name = "Set2")) +
   facet_wrap(~sentiment, ncol = 1, scales = "free") +
   labs(x = "tf-idf", y = NULL)
-```
-
-## Simple model with the TF-IDF
-
-```{r}
-
-# set.seed(123)
-# # make 80/20 train/test split
-# # Stratify according to sentiment
-# # remove one hot encoding
-# split <- initial_split(select(text_df, -c("positive", "negative", "neutral")), prop = 0.8, strata = "sentiment")
-# 
-# train_data <- training(split)
-# test_data <- testing(split)
-# 
-# feature_set <- feature_set(text)
-# 
-# text_df %>% head()
-  
-
 ```
 
 
@@ -676,6 +660,22 @@ bake(sentiment_obj, text_train) %>%
   knitr::kable(caption = "Five first rows and columns")
 ```
 
+## Numeric "words" by sentiment
+
+```{r}
+## Numeric information by sentiment
+tidy_df %>%
+  group_by(sentiment) %>% 
+  count(word) %>%
+  #filter out numerics
+  filter(grepl(pattern = "[0-9]+", x = word)) %>%
+  group_by(sentiment) %>% 
+  slice(1:10) %>% 
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+  comparison.cloud(colors = brewer.pal(n = 3, "Pastel1"))
+
+```
+
 
 
 ## We should try removing numbers from the model
@@ -707,11 +707,14 @@ workflow() %>%
   # Extract predicted sentiment probabilities
   select(id, sentence, sentiment, .pred_Negative, .pred_Neutral, .pred_Positive) %>% 
   pivot_longer(cols = contains(".pred_"), names_to = "pred_class", values_to = "probability") %>% 
+  # Re-order sentiments for the plot
+  mutate(pred_class = factor(pred_class, levels = c(".pred_Positive", ".pred_Negative", ".pred_Neutral"))) %>%
   # get 25 random sentences
   filter(id %in% sample(text_train$id, size = 25)) %>% 
   mutate(id = factor(id)) %>% 
   ggplot(aes(x = id, y = probability, fill = pred_class)) +
   geom_col() +
+  scale_fill_manual(values = brewer.pal(n = 3, name = "Set2")) +
   coord_flip() +
   ggtitle("Predicted sentiment probabilities", subtitle = "25 random example sentences")
   
@@ -722,21 +725,6 @@ workflow() %>%
 
 # Extra slides
 
-## Numeric "words" by sentiment
-
-```{r}
-## Numeric information by sentiment
-tidy_df %>%
-  group_by(sentiment) %>% 
-  count(word) %>%
-  #filter out numerics
-  filter(grepl(pattern = "[0-9]+", x = word)) %>%
-  group_by(sentiment) %>% 
-  slice(1:10) %>% 
-  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
-  comparison.cloud(colors = brewer.pal(n = 3, "Pastel1"))
-
-```
 
 
 
