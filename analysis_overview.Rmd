@@ -375,3 +375,39 @@ bigrams_df %>%
 
 ```
 
+## Most common bigrams (excluding stop words)
+
+```{r}
+
+# separate bigrams into different columns
+bigrams_separated <- bigrams_df %>%
+  separate(bigram, c("word1", "word2"), sep = " ")
+
+# Filter out bigrams containing stop words
+bigrams_filtered <- bigrams_separated %>%
+  filter(!word1 %in% stop_words$word) %>%
+  filter(!word2 %in% stop_words$word)
+
+# new bigram counts:
+bigram_counts <- bigrams_filtered %>% 
+  count(word1, word2, sort = TRUE)
+
+# table
+bigram_counts %>% 
+  head(10) %>% 
+  knitr::kable(caption = "Ten most common bigrams")
+
+```
+
+## Exploring odd combinations
+
+```{r}
+
+text_df %>% 
+  # Find sentences containing bigrams starting with "sof"
+  filter(grepl(pattern = "sof", x = sentence, ignore.case =TRUE)) %>% 
+  select(sentence) %>% 
+  head(5) %>% 
+  knitr::kable(caption = "Example sentences with the term \"sof\"")
+
+```
