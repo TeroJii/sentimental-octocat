@@ -194,3 +194,22 @@ tidy_df <- tidy_df %>%
 
 ```
 
+## What are the most common words?
+
+```{r}
+
+## Most common words visualization
+
+tidy_df %>% 
+  # count words after stop words removal
+  count(word, sort = TRUE) %>% 
+  head(15) %>% 
+  mutate(word = reorder(word, n)) %>% 
+  ggplot(aes(x = n, y = word)) +
+  geom_col() +
+  labs(y = NULL) +
+  ggtitle("Most common words in the example sentences",
+          subtitle = "Excluding common stopwords")
+```
+
+
