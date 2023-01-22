@@ -196,7 +196,7 @@ tidy_df <- tidy_df %>%
 
 ## What are the most common words?
 
-```{r}
+```{r, fig.height=7}
 
 ## Most common words visualization
 
@@ -212,4 +212,20 @@ tidy_df %>%
           subtitle = "Excluding common stopwords")
 ```
 
+
+## Words vs. different sentiments
+
+
+```{r, fig.height=7, fig.width=8, warning=FALSE}
+
+tidy_df %>% 
+  count(word, sentiment, sort = TRUE) %>%
+  group_by(sentiment) %>%
+  # twenty most common words per sentiment
+  slice(1:20) %>% 
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+  comparison.cloud(colors = brewer.pal(n = 3, "Pastel1"),
+                   max.words = 60)
+
+```
 
