@@ -355,4 +355,23 @@ sentiments_td_idf %>%
 
 # n-grams
 
-## Title
+## Definition and relevance
+
+* A successive group of *n* items (words, syllables, letters etc.) is called an n-gram. Usually refers to words, *e.g.* bigram for two-word combinations, trigram for three and so on
+
+```{r}
+
+# Find bigrams
+bigrams_df <- text_df %>% 
+  unnest_tokens(bigram, sentence, token = "ngrams", n = 2) %>%
+  filter(!is.na(bigram))
+
+bigrams_df %>% 
+  count(bigram, sort = TRUE) %>% 
+  head(6) %>% 
+  knitr::kable(caption = "Six most common bigrams for the data")
+
+
+
+```
+
