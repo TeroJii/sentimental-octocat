@@ -549,9 +549,9 @@ null_rs %>%
 
 ## Classification model with regularization
 
-* Regularized linear models are a class of statistical model that can be used in regression and classification tasks
+* Regularized linear models are a class of statistical models that can be used in regression and classification tasks
 
-* Lasso classification learns how much of a penalty should be put of some features which helps us select less features for the final model
+* Lasso classification learns how much of a penalty should be put on the coefficient estimates, and for some features it may shrink them to zero, which helps us to select less features for the final model
 
 * As pre-processing steps we extract words as tokens, filter a maximum of 1000 most common tokens, and calculate the TF-IDF statistic for the tokens
 
@@ -575,6 +575,49 @@ multi_lasso_wf <- workflow() %>%
   ## Use glmnet Lasso as the model engine
   add_model(multi_spec)
 
+
+```
+
+## Tuning the regularization parameter via 5-fold CV
+
+```{r}
+
+# Regularization parameter lambda
+lambda_grid <- grid_regular(penalty(), levels = 30)
+
+# set random number seed
+
+# 5-fold CV
+set.seed(2020)
+multi_lasso_rs <- tune_grid(
+  multi_lasso_wf,
+  sentiment_folds,
+  grid = lambda_grid,
+  control = control_resamples(save_pred = TRUE)
+)
+
+## best performance by accuracy
+best_acc <- multi_lasso_rs %>%
+  show_best("accuracy")
+
+## best performance by ROC AUC
+best_auc <- multi_lasso_rs %>%
+  show_best("roc_auc")
+
+## Show best results and associated lambda value
+rbind(slice(best_acc, 1:3), slice(best_auc, 1:3)) %>% 
+  select(-.config) %>% 
+  knitr::kable(caption = "Three best lambda values based on Accuracy and ROC AUC")
+
+```
+
+## Placeholder
+
+```{r}
+
+lasso_rs_predictions <- collect_predictions(multi_lasso_rs) %>% 
+  # Choose predictions with best results by ROC AUC
+  filter(penalty == best_auc$penalty[1])
 
 ```
 
