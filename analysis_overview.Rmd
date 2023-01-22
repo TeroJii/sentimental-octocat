@@ -55,6 +55,19 @@ text_df <- readxl::read_excel(path = here("data", "sentences_with_sentiment.xlsx
   # all column names to lowercase
   janitor::clean_names()
 
+```
+
+```{r data-wrangle}
+
+## Find duplicate sentences ----
+
+# indices
+double_ind <- duplicated(text_df$sentence)
+
+# The actual sentences
+doubles <- text_df$sentence[double_ind] %>% 
+  unique()
+
 
 ```
 
@@ -72,7 +85,7 @@ text_df <- readxl::read_excel(path = here("data", "sentences_with_sentiment.xlsx
 text_df %>% 
   group_by(sentiment) %>% 
   summarise(n = n()) %>% 
-  mutate(prercentage = 100*n/length(text_df$sentiment)) %>% 
+  mutate(percentage = 100*n/length(text_df$sentiment)) %>% 
   knitr::kable(digits = 2, caption = "The sentiment labels for the example sentences")
 
 ```
@@ -81,4 +94,20 @@ text_df %>%
 # Exploring the data
 
 ## Example sentences
+
+* The sentences are picked from regulatory assessments (a few examples):
+
+<!---
+Print out a few example sentences
+--->
+
+  - `r doubles[1]`
+  
+  - `r doubles[2]`
+    
+  - `r doubles[3]`
+
+* There are `r length(doubles)` sentences which appear at least twice in the data set
+
+## New slide
 
