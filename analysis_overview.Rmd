@@ -411,3 +411,52 @@ text_df %>%
   knitr::kable(caption = "Example sentences with the term \"sof\"")
 
 ```
+
+## Visualize bigrams by sentiment
+
+```{r, fig.height = 6.5, fig.width=8}
+
+# Unite bigrams after removing stopwords
+bigrams_united <- bigrams_filtered %>%
+  unite(bigram, word1, word2, sep = " ")
+
+# Count TF-IDF for bigrams 
+bigram_tf_idf <- bigrams_united %>%
+  count(sentiment, bigram) %>%
+  bind_tf_idf(bigram, sentiment, n) %>%
+  arrange(desc(tf_idf))
+
+# Visualize by sentiment
+bigram_tf_idf %>% 
+  # Re-order sentiments for the plot
+  mutate(sentiment = factor(sentiment, levels = c("Positive", "Negative", "Neutral"))) %>%
+  group_by(sentiment) %>% 
+  arrange(desc(tf_idf)) %>%
+  top_n(3) %>% 
+  ggplot(aes(x = tf_idf, y = bigram, fill = sentiment)) +
+  geom_col() +
+  scale_fill_manual(values = brewer.pal(n = 3, name = "Set2")) +
+  facet_grid(sentiment~., scales = "free")
+
+```
+
+# From exploration to classification
+
+## Basic principles
+
+```{r}
+
+# Make test/train split 20/80
+# Same fraction of sentiments in both sets
+text_split <- initial_split(text_df, prop = 0.8, strata = sentiment)
+
+text_train <- training(text_split)
+text_test <- testing(text_split)
+
+```
+
+
+* Test/train-split to evaluate models:
+
+    - Here 80/20 split, so that the train set contains `r length(text_train$sentence)` and the test set `r length(text_test$sentence)` sentences
+    
