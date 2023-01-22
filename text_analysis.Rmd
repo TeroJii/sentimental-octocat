@@ -303,7 +303,7 @@ tidy_df %>%
 
 ## TF-IDF
 
-```{r}
+```{r, fig.height = 7}
 
 sentiments_td_idf <- tidy_df %>%
   group_by(sentiment) %>% 
@@ -521,7 +521,8 @@ null_rs <- workflow() %>%
   )
 
 null_rs %>%
-  collect_metrics()
+  collect_metrics() %>% 
+  select(-.config)
 
 ```
 
@@ -834,6 +835,20 @@ best_auc <- multi_lasso3_rs %>%
 
 rbind(slice(best_acc,1:3), slice(best_auc, 1:3)) %>% 
   select(-.config)
+
+```
+
+## Confusion matrix for the bigram model
+
+```{r}
+
+multi_lasso3_rs %>%
+  collect_predictions() %>%
+  filter(penalty == best_acc$penalty[1]) %>%
+  filter(id == "Fold1") %>% 
+  conf_mat(sentiment, .pred_class) %>%
+  autoplot(type = "heatmap") +
+  ggtitle("Example confusion matrix for Fold 1")
 
 ```
 
