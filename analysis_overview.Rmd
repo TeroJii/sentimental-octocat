@@ -593,6 +593,7 @@ multi_lasso_rs <- tune_grid(
   multi_lasso_wf,
   sentiment_folds,
   grid = lambda_grid,
+  metrics = metric_set(accuracy, sensitivity, specificity, roc_auc),
   control = control_resamples(save_pred = TRUE)
 )
 
@@ -703,3 +704,56 @@ tidy_df %>%
 
 ```
 
+## Finalizing the model 
+
+## Finalizing parameters 
+
+* Fitting the model with the tuned lambda value
+
+* Estimating performance on test data
+
+```{r}
+
+# Choose lambda based on accuracy
+chosen_lambda <- multi_lasso_rs %>%
+  select_by_one_std_err(metric = "accuracy", -penalty)
+
+
+## Finalize model
+final_lasso <- finalize_workflow(multi_lasso_wf, chosen_lambda)
+
+
+## Fit tuned model on entire train data
+fitted_lasso <- fit(final_lasso, text_train)
+
+## Fit model on test data
+final_fitted <- last_fit(final_lasso, text_split)
+
+collect_metrics(final_fitted) %>% 
+  knitr::kable(caption = "Model performance on test set")
+```
+
+
+## Interpret results - 1 
+
+```{r}
+## Print out terms with large coefficient 
+fitted_lasso %>%
+  extract_fit_parsnip() %>%
+  tidy() %>%
+  arrange(-estimate) %>% 
+  head(8) %>% 
+  knitr::kable(caption = "Terms with large effect on the model")
+```
+
+## Interpret results - 2 
+
+```{r}
+## Print out terms with large coefficient 
+fitted_lasso %>%
+  extract_fit_parsnip() %>%
+  tidy() %>%
+  arrange(estimate) %>% 
+  head(8) %>% 
+  knitr::kable(caption = "Terms with large effect on the model")
+```
