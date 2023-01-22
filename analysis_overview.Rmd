@@ -621,22 +621,7 @@ autoplot(multi_lasso_rs) +
 
 ```
 
-## Confusion matrix
-
-```{r}
-
-multi_lasso_rs %>%
-  collect_predictions() %>%
-  filter(penalty == best_acc$penalty[1]) %>%
-  filter(id == "Fold1") %>% 
-  conf_mat(sentiment, .pred_class) %>%
-  autoplot(type = "heatmap") +
-  ggtitle("Example confusion matrix for Fold 1", subtitle = "Accuracy used as the metric")
-
-```
-
-
-## Re-sampled confusion matrix
+## Confusion matrix (accuracy)
 
 ```{r}
 
@@ -648,22 +633,7 @@ conf_mat_resampled(multi_lasso_rs, tidy = FALSE, parameters = best_acc %>% filte
 
 ```
 
-
-## Confusion matrix (best ROC AUC)
-
-
-```{r}
-multi_lasso_rs %>%
-  collect_predictions() %>%
-  filter(penalty == best_auc$penalty[1]) %>%
-  filter(id == "Fold1") %>% 
-  conf_mat(sentiment, .pred_class) %>%
-  autoplot(type = "heatmap") +
-  ggtitle("Example confusion matrix for Fold 1")
-
-```
-
-## Re-sampled Confusion matrix ROC AUC
+## Confusion matrix (ROC AUC)
 
 ```{r}
 
@@ -672,6 +642,42 @@ multi_lasso_rs %>%
 conf_mat_resampled(multi_lasso_rs, tidy = FALSE, parameters = best_auc %>% filter(penalty == best_auc$penalty[1])) %>%
   autoplot(type = "heatmap") +
   ggtitle("Confusion matrix for 5-fold cross-validation", subtitle = "ROC AUC used as the metric")
+
+```
+
+## Capturing ambiguity
+
+* Show probabilities for different sentiments
+
+```{r}
+
+# Lambda with best performance
+## Set best lambda from k-fold when training model with full train data
+multi_spec <- multinom_reg(penalty = best_acc$penalty[1], mixture = 1) %>%
+  set_mode("classification") %>%
+  set_engine("glmnet")
+
+## Fit same model for entire train data
+workflow() %>%
+  add_recipe(sentiment_rec, blueprint = sparse_bp) %>%
+  add_model(multi_spec) %>% 
+  fit(data = text_train) %>% 
+  # find predictions
+  augment(text_train) %>%  
+  # Extract predicted sentiment probabilities
+  select(id, sentence, sentiment, .pred_Negative, .pred_Neutral, .pred_Positive) %>% 
+  pivot_longer(cols = contains(".pred_"), names_to = "pred_class", values_to = "probability") %>% 
+  # Re-order sentiments for the plot
+  mutate(pred_class = factor(pred_class, levels = c(".pred_Positive", ".pred_Negative", ".pred_Neutral"))) %>%
+  # get 25 random sentences
+  filter(id %in% sample(text_train$id, size = 25)) %>% 
+  mutate(id = factor(id)) %>% 
+  ggplot(aes(x = id, y = probability, fill = pred_class)) +
+  geom_col() +
+  scale_fill_manual(values = brewer.pal(n = 3, name = "Set2")) +
+  coord_flip() +
+  ggtitle("Predicted sentiment probabilities", subtitle = "25 random example sentences")
+
 
 ```
 
