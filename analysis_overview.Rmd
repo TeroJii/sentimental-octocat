@@ -565,7 +565,7 @@ multi_spec <- multinom_reg(penalty = tune(), mixture = 1) %>%
 
 
 ### ----
-
+## use sparse matrix format
 sparse_bp <- default_recipe_blueprint(composition = "dgCMatrix")
 
 ## Define workflow for training the model
@@ -613,7 +613,7 @@ rbind(slice(best_acc, 1:3), slice(best_auc, 1:3)) %>%
 
 ## Choosing the best value for lambda
 
-```{r tuning-plot}
+```{r tuning-plot, fig.height=6}
 
 autoplot(multi_lasso_rs) +
   geom_vline(xintercept = best_acc$penalty[1], color = "red") +
@@ -623,7 +623,7 @@ autoplot(multi_lasso_rs) +
 
 ## Confusion matrix (accuracy)
 
-```{r}
+```{r, fig.height=6.5}
 
 # Re-sampled confusion matrix with the best accuracy lambda
 # Average of 5-folds
@@ -635,7 +635,7 @@ conf_mat_resampled(multi_lasso_rs, tidy = FALSE, parameters = best_acc %>% filte
 
 ## Confusion matrix (ROC AUC)
 
-```{r}
+```{r, fig.height=6.5}
 
 # Re-sampled confusion matrix with the best ROC AUC lambda
 # Average of 5-folds
@@ -649,7 +649,7 @@ conf_mat_resampled(multi_lasso_rs, tidy = FALSE, parameters = best_auc %>% filte
 
 * Show probabilities for different sentiments
 
-```{r}
+```{r, fig.height=6.5, fig.width=8}
 
 # Lambda with best performance
 ## Set best lambda from k-fold when training model with full train data
@@ -678,6 +678,28 @@ workflow() %>%
   coord_flip() +
   ggtitle("Predicted sentiment probabilities", subtitle = "25 random example sentences")
 
+```
+
+## Improvements to the model
+
+* We could try improving the model by:
+
+    - using bigrams, trigrams etc.
+    
+    - Preprocessing steps such as removing stop words, removing digits, brand names
+    
+
+```{r, fig.height=4, fig.width=6}
+## Numeric information by sentiment
+tidy_df %>%
+  group_by(sentiment) %>% 
+  count(word) %>%
+  #filter out numerics
+  filter(grepl(pattern = "[0-9]+", x = word)) %>%
+  group_by(sentiment) %>% 
+  slice(1:10) %>% 
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+  comparison.cloud(colors = brewer.pal(n = 3, "Pastel1"))
 
 ```
 
