@@ -547,3 +547,34 @@ null_rs %>%
 
 ```
 
+## Classification model with regularization
+
+* Regularized linear models are a class of statistical model that can be used in regression and classification tasks
+
+* Lasso classification learns how much of a penalty should be put of some features which helps us select less features for the final model
+
+* As pre-processing steps we extract words as tokens, filter a maximum of 1000 most common tokens, and calculate the TF-IDF statistic for the tokens
+
+```{r lasso-specification}
+
+## Specifying Lasso as the classification model
+## We will tune the regularization term lambda to find optimal level of regularization
+multi_spec <- multinom_reg(penalty = tune(), mixture = 1) %>%
+  set_mode("classification") %>%
+  set_engine("glmnet")
+
+
+### ----
+
+sparse_bp <- default_recipe_blueprint(composition = "dgCMatrix")
+
+## Define workflow for training the model
+multi_lasso_wf <- workflow() %>%
+  ## Train to predict sentiment from sentence by using sentiment_rec
+  add_recipe(sentiment_rec, blueprint = sparse_bp) %>%
+  ## Use glmnet Lasso as the model engine
+  add_model(multi_spec)
+
+
+```
+
