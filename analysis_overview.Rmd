@@ -78,7 +78,7 @@ doubles <- text_df$sentence[double_ind] %>%
 
 * The sentences have been labelled by Subject Matter Experts (SMEs) as being `positive`, `negative` or `neutral` in tone
 
-* We want to explore the data and see if it would be possible to automate labeling task
+* We want to explore the data and see if it would be possible to automate the labeling task
 
 ```{r}
 # Print out label frequencies to show class (im)balance
@@ -142,6 +142,8 @@ if(params$filter_duplicates){
 
 ```
 
+* `r length(text_df$sentence)` unique sentences were left for further analyses
+
 # Basics of analyzing text
 
 ## How do we make text suitable for ML?
@@ -152,7 +154,7 @@ if(params$filter_duplicates){
 
 * Some modifications, such as transforming words into lowercase and removing punctuation, are usually implemented to make sure the model understands that, e.g. `Cabin` and `cabin.` are the same concept
 
-* Once we have extracted the *tokens* from raw text, we can analyze things such as how often they appear
+* Once we have extracted the *tokens* from raw text, we can analyze their properties, such as how often they appear
 
 ## Most common words
 
@@ -166,8 +168,29 @@ tidy_df <- text_df %>%
 tidy_df %>% 
   # count occurence of words
   count(word, sort = TRUE) %>%
-  head(10) %>% 
-  knitr::kable(caption = "Ten most common words in the example sentences")
+  head(8) %>% 
+  knitr::kable(caption = "Eight most common words in the example sentences")
+
+```
+
+## Removing stop words
+
+* Not all words are equally informative
+
+* Many common words in the English language, such as `the`, `a`, `with` etc. do not necessarily carry much meaningful information
+
+* These words are usually referred to as stop words, and it is common practice to remove them in many Natural Language Processing (NLP) tasks
+
+* Note that there might be big differences between different pre-compiled stop word lists
+
+```{r}
+
+# Get a dictionary of common stopwords which ship with tidytext
+data("stop_words")
+
+# remove stop_words
+tidy_df <- tidy_df %>% 
+  anti_join(stop_words)
 
 ```
 
