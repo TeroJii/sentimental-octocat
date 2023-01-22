@@ -786,19 +786,19 @@ autoplot(multi_lasso2_rs) +
 
 * Accuracy got worse
 
-* Let's keep the stopwords
+* Let's keep the stopwords, and add bi-grams
 
 ```{r}
 # a function for creating a recipe and moving stopwords
-no_digits_rec <- recipe(sentiment ~ sentence, data = text_train) %>%
-  # remove numeric words
-  step_tokenize(sentence, options = list(strip_numeric = TRUE)) %>%
+bigrams_rec <- recipe(sentiment ~ sentence, data = text_train) %>%
+  # use words and bigrams as tokens
+  step_tokenize(sentence, token = "ngrams", options = list(n = 2, n_min = 1)) %>%
   step_tokenfilter(sentence, max_tokens = 1e3) %>%
   step_tfidf(sentence)
 
 ## Update workflow to include new pre-processing steps
 multi_lasso_wf3 <- workflow() %>%
-  add_recipe(no_digits_rec, blueprint = sparse_bp) %>%
+  add_recipe(bigrams_rec, blueprint = sparse_bp) %>%
   # Add glmnet LASSO specification
   add_model(
     multinom_reg(penalty = tune(), mixture = 1) %>%
@@ -834,5 +834,22 @@ rbind(slice(best_acc,1:3), slice(best_auc, 1:3))
 # Extra slides
 
 
+```{r}
 
+## Object fed to the LAsso model for training
+bigrams_obj <- bigrams_rec %>%
+  prep()
+   
+#str(bake(sentiment_obj, text_train))
+
+## Visualizing object structure
+bake(bigrams_obj, text_train) %>%
+  # Five first columns
+  select(1:5) %>%
+  # Five first rows
+  slice(1:5) %>% 
+  # Remove "_sentence" from predictor column names
+  rename_with(~str_remove(., '_sentence'))
+
+```
 
