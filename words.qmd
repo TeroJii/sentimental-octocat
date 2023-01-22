@@ -40,3 +40,13 @@ $$
 
 ## n-grams
 
+A successive group of *n* items (words, syllables, letters etc.) is called an n-gram. Usually refers to words, e.g. bigram for two-word combinations, trigram for three.
+
+```{r}
+
+# Split sentences into bigrams
+movie_comments %>% 
+  unnest_tokens(bigram, text, token = "ngrams", n = 2)
+
+```
+

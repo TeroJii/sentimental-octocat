@@ -289,6 +289,28 @@ IDF(\text{term}) = \ln \left( \frac{n_{\text{documents}}}{n_{\text{documents con
 </section>
 <section id="n-grams" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="n-grams"><span class="header-section-number">2.2</span> n-grams</h2>
+<p>A successive group of <em>n</em> items (words, syllables, letters etc.) is called an n-gram. Usually refers to words, e.g.&nbsp;bigram for two-word combinations, trigram for three.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Split sentences into bigrams</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>movie_comments <span class="sc">%&gt;%</span> </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_tokens</span>(bigram, text, <span class="at">token =</span> <span class="st">"ngrams"</span>, <span class="at">n =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 40 × 2
+      id bigram     
+   &lt;int&gt; &lt;chr&gt;      
+ 1     1 the movie  
+ 2     1 movie was  
+ 3     1 was great  
+ 4     2 the movie  
+ 5     2 movie was  
+ 6     2 was bad    
+ 7     3 i didn't   
+ 8     3 didn't care
+ 9     3 care for   
+10     3 for the    
+# … with 30 more rows</code></pre>
+</div>
+</div>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
