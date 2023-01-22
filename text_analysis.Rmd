@@ -487,7 +487,7 @@ sentiment_rec <-
 sentiment_rec <- sentiment_rec %>% 
   # Extract words as tokens
   step_tokenize(sentence) %>% 
-  # Only keep the 500 most common tokens
+  # Only keep the 1000 most common tokens
   step_tokenfilter(sentence, max_tokens = 1000) %>%
   # Calculate TF-IDF
   step_tfidf(sentence)
@@ -651,6 +651,32 @@ multi_lasso_rs %>%
 
 ```
 
+## What does the Lasso model eat
+
+* Let's take a look at some of the predictors the model uses
+
+* A large sparse matrix (188 rows: 1 per sentence x 1001 columns: sentiment + 1000 most common tokens)
+
+```{r}
+
+## Object fed to the LAsso model for training
+sentiment_obj <- sentiment_rec %>%
+  prep()
+   
+#str(bake(sentiment_obj, text_train))
+
+## Visualizing object structure
+bake(sentiment_obj, text_train) %>% 
+  # Five first columns
+  select(1:5) %>%
+  # Five first rows
+  slice(1:5) %>% 
+  # Remove "_sentence" from predictor column names
+  rename_with(~str_remove(., '_sentence')) %>%
+  knitr::kable(caption = "Five first rows and columns")
+```
+
+
 
 ## We should try removing numbers from the model
 
@@ -713,14 +739,4 @@ tidy_df %>%
 ```
 
 
-## What does the Lasso model eat
-
-```{r}
-
-sentiment_obj <- sentiment_rec %>%
-  prep()
-   
-str(bake(sentiment_obj, text_train))
-
-```
 
