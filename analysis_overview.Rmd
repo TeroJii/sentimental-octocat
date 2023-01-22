@@ -611,13 +611,67 @@ rbind(slice(best_acc, 1:3), slice(best_auc, 1:3)) %>%
 
 ```
 
-## Placeholder
+## Choosing the best value for lambda
+
+```{r tuning-plot}
+
+autoplot(multi_lasso_rs) +
+  geom_vline(xintercept = best_acc$penalty[1], color = "red") +
+  ggtitle("Regularization parameter with best accuracy")
+
+```
+
+## Confusion matrix
 
 ```{r}
 
-lasso_rs_predictions <- collect_predictions(multi_lasso_rs) %>% 
-  # Choose predictions with best results by ROC AUC
-  filter(penalty == best_auc$penalty[1])
+multi_lasso_rs %>%
+  collect_predictions() %>%
+  filter(penalty == best_acc$penalty[1]) %>%
+  filter(id == "Fold1") %>% 
+  conf_mat(sentiment, .pred_class) %>%
+  autoplot(type = "heatmap") +
+  ggtitle("Example confusion matrix for Fold 1", subtitle = "Accuracy used as the metric")
+
+```
+
+
+## Re-sampled confusion matrix
+
+```{r}
+
+# Re-sampled confusion matrix with the best accuracy lambda
+# Average of 5-folds
+conf_mat_resampled(multi_lasso_rs, tidy = FALSE, parameters = best_acc %>% filter(penalty == best_acc$penalty[1])) %>%
+  autoplot(type = "heatmap") +
+  ggtitle("Confusion matrix for 5-fold cross-validation", subtitle = "Accuracy used as the metric")
+
+```
+
+
+## Confusion matrix (best ROC AUC)
+
+
+```{r}
+multi_lasso_rs %>%
+  collect_predictions() %>%
+  filter(penalty == best_auc$penalty[1]) %>%
+  filter(id == "Fold1") %>% 
+  conf_mat(sentiment, .pred_class) %>%
+  autoplot(type = "heatmap") +
+  ggtitle("Example confusion matrix for Fold 1")
+
+```
+
+## Re-sampled Confusion matrix ROC AUC
+
+```{r}
+
+# Re-sampled confusion matrix with the best ROC AUC lambda
+# Average of 5-folds
+conf_mat_resampled(multi_lasso_rs, tidy = FALSE, parameters = best_auc %>% filter(penalty == best_auc$penalty[1])) %>%
+  autoplot(type = "heatmap") +
+  ggtitle("Confusion matrix for 5-fold cross-validation", subtitle = "ROC AUC used as the metric")
 
 ```
 
