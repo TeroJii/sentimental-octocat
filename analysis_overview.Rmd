@@ -1,0 +1,49 @@
+---
+title: "Sentiment Analysis"
+author: "Tero Jalkanen"
+date: "`r Sys.Date()`"
+output: ioslides_presentation
+params:
+  filter_duplicates: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+## Packages -----------
+
+library(readxl)
+library(here)
+library(tidyverse)
+library(janitor)
+library(skimr)
+library(tidytext)
+library(scales)
+library(textdata)
+library(RColorBrewer)
+library(wordcloud)
+library(reshape2)
+library(tidymodels)
+library(topicmodels)
+library(textrecipes)
+# methods for imbalanced data sets
+library(themis)
+library(hardhat)
+library(glmnet)
+library(stopwords)
+
+## Set file paths
+here::i_am("text_analysis.Rmd")
+
+## Set graphical theme
+theme_set(theme_minimal())
+
+```
+
+## Introduction
+
+* Our task is to analyze document containing 266 sentences written in English
+
+* The sentences have been labelled by Subject Matter Experts (SMEs) as being `positive`, `negative` or `neutral` in tone
+
+* We want to explore the data and see if it would be possible to automate labelling task
