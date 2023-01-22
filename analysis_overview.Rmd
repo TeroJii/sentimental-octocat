@@ -101,13 +101,44 @@ text_df %>%
 Print out a few example sentences
 --->
 
-  - `r doubles[1]`
+  - *`r doubles[1]`*
   
-  - `r doubles[2]`
+  - *`r doubles[2]`*
     
-  - `r doubles[3]`
+  - *`r doubles[3]`*
 
 * There are `r length(doubles)` sentences which appear at least twice in the data set
 
-## New slide
+## Sentiment balance without duplicates
+
+* The duplicated sentences do not appear to have multiple labels assigned to them
+
+* Having the same sentence with the same sentiment label twice does not add new information
+
+```{r}
+
+# sentiments without duplicates
+no_doubles_df <- text_df %>%
+  select(-id) %>% 
+  # include doubles only once
+  unique.data.frame()
+
+
+#balance table
+no_doubles_df %>% 
+  group_by(sentiment) %>% 
+  summarise(n = n()) %>% 
+  mutate(prercentage = 100*n/length(no_doubles_df$sentiment)) %>% 
+  knitr::kable(digits = 2, caption = "The sentiment labels for the example sentences (duplicates removed)")
+
+
+## Filter out duplicate sentences if the filtering parameter is set to TRUE
+if(params$filter_duplicates){
+  # remove duplicate entries
+  # each sentence only appears once
+  text_df <- text_df[!double_ind,]
+}
+
+
+```
 
