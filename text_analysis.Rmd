@@ -30,6 +30,7 @@ library(textrecipes)
 library(themis)
 library(hardhat)
 library(glmnet)
+library(stopwords)
 
 ## Set file paths
 here::i_am("text_analysis.Rmd")
@@ -635,6 +636,42 @@ multi_lasso_rs %>%
 
 ```
 
+## Capturing ambiguity
+
+* Show probabilities for different sentiments
+
+```{r}
+
+## Set best lambda from k-fold when training model with full train data
+multi_spec <- multinom_reg(penalty = best_acc$penalty[1], mixture = 1) %>%
+  set_mode("classification") %>%
+  set_engine("glmnet")
+
+## Fit same model for entire train data
+workflow() %>%
+  add_recipe(sentiment_rec, blueprint = sparse_bp) %>%
+  add_model(multi_spec) %>% 
+  fit(data = text_train) %>% 
+  # find predictions
+  augment(text_train) %>%  
+  # Extract predicted sentiment probabilities
+  select(id, sentence, sentiment, .pred_Negative, .pred_Neutral, .pred_Positive) %>% 
+  pivot_longer(cols = contains(".pred_"), names_to = "pred_class", values_to = "probability") %>% 
+  # Re-order sentiments for the plot
+  mutate(pred_class = factor(pred_class, levels = c(".pred_Positive", ".pred_Negative", ".pred_Neutral"))) %>%
+  # get 25 random sentences
+  filter(id %in% sample(text_train$id, size = 25)) %>% 
+  mutate(id = factor(id)) %>% 
+  ggplot(aes(x = id, y = probability, fill = pred_class)) +
+  geom_col() +
+  scale_fill_manual(values = brewer.pal(n = 3, name = "Set2")) +
+  coord_flip() +
+  ggtitle("Predicted sentiment probabilities", subtitle = "25 random example sentences")
+  
+
+```
+
+
 ## What does the Lasso model eat
 
 * Let's take a look at some of the predictors the model uses
@@ -686,38 +723,109 @@ tidy_df %>%
 
 * Remove custom stopwords
 
-## Capturing ambiguity
+## Remove stopwords etc
 
-* Show probabilities for different sentiments
 
 ```{r}
 
-## Set best lambda from k-fold when training model with full train data
-multi_spec <- multinom_reg(penalty = best_acc$penalty[1], mixture = 1) %>%
-  set_mode("classification") %>%
-  set_engine("glmnet")
+# a function for creating a recipe and moving stopwords
+stopword_rec <- recipe(sentiment ~ sentence, data = text_train) %>%
+  # remove numeric words
+  step_tokenize(sentence, options = list(strip_numeric = TRUE)) %>%
+  # remove stopwords (including custom word "mg")
+  step_stopwords(sentence, stopword_source = "snowball") %>%
+  step_tokenfilter(sentence, max_tokens = 1e3) %>%
+  step_tfidf(sentence)
 
-## Fit same model for entire train data
-workflow() %>%
-  add_recipe(sentiment_rec, blueprint = sparse_bp) %>%
-  add_model(multi_spec) %>% 
-  fit(data = text_train) %>% 
-  # find predictions
-  augment(text_train) %>%  
-  # Extract predicted sentiment probabilities
-  select(id, sentence, sentiment, .pred_Negative, .pred_Neutral, .pred_Positive) %>% 
-  pivot_longer(cols = contains(".pred_"), names_to = "pred_class", values_to = "probability") %>% 
-  # Re-order sentiments for the plot
-  mutate(pred_class = factor(pred_class, levels = c(".pred_Positive", ".pred_Negative", ".pred_Neutral"))) %>%
-  # get 25 random sentences
-  filter(id %in% sample(text_train$id, size = 25)) %>% 
-  mutate(id = factor(id)) %>% 
-  ggplot(aes(x = id, y = probability, fill = pred_class)) +
-  geom_col() +
-  scale_fill_manual(values = brewer.pal(n = 3, name = "Set2")) +
-  coord_flip() +
-  ggtitle("Predicted sentiment probabilities", subtitle = "25 random example sentences")
-  
+## Update workflow to include new pre-processing steps
+multi_lasso_wf2 <- workflow() %>%
+  add_recipe(stopword_rec, blueprint = sparse_bp) %>%
+  # Add glmnet LASSO specification
+  add_model(
+    multinom_reg(penalty = tune(), mixture = 1) %>%
+    set_mode("classification") %>%
+    set_engine("glmnet")
+    )
+
+
+set.seed(2020)
+## Train new model with 5-fold cv
+multi_lasso2_rs <- tune_grid(
+  multi_lasso_wf2,
+  sentiment_folds,
+#  grid = smaller_lambda,
+  grid = lambda_grid,
+  control = control_resamples(save_pred = TRUE)
+)
+
+
+best_acc <- multi_lasso2_rs %>%
+  show_best("accuracy")
+
+
+best_auc <- multi_lasso2_rs %>%
+  show_best("roc_auc")
+
+rbind(slice(best_acc,1:3), slice(best_auc, 1:3))
+
+```
+
+## Train performance
+
+```{r}
+
+autoplot(multi_lasso2_rs) +
+  geom_vline(xintercept = best_acc$penalty[1], color = "red") +
+  ggtitle("Regularization parameter with best accuracy")
+
+
+```
+
+
+## Again without digits
+
+* Accuracy got worse
+
+* Let's keep the stopwords
+
+```{r}
+# a function for creating a recipe and moving stopwords
+no_digits_rec <- recipe(sentiment ~ sentence, data = text_train) %>%
+  # remove numeric words
+  step_tokenize(sentence, options = list(strip_numeric = TRUE)) %>%
+  step_tokenfilter(sentence, max_tokens = 1e3) %>%
+  step_tfidf(sentence)
+
+## Update workflow to include new pre-processing steps
+multi_lasso_wf3 <- workflow() %>%
+  add_recipe(no_digits_rec, blueprint = sparse_bp) %>%
+  # Add glmnet LASSO specification
+  add_model(
+    multinom_reg(penalty = tune(), mixture = 1) %>%
+    set_mode("classification") %>%
+    set_engine("glmnet")
+    )
+
+
+set.seed(2020)
+## Train new model with 5-fold cv
+multi_lasso3_rs <- tune_grid(
+  multi_lasso_wf3,
+  sentiment_folds,
+#  grid = smaller_lambda,
+  grid = lambda_grid,
+  control = control_resamples(save_pred = TRUE)
+)
+
+
+best_acc <- multi_lasso3_rs %>%
+  show_best("accuracy")
+
+
+best_auc <- multi_lasso3_rs %>%
+  show_best("roc_auc")
+
+rbind(slice(best_acc,1:3), slice(best_auc, 1:3))
 
 ```
 
