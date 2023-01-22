@@ -229,3 +229,34 @@ tidy_df %>%
 
 ```
 
+## Word frequencies by sentiment
+
+* Mere word counts might not be informative when there is imbalance between sentiment labels
+
+```{r, warning=FALSE}
+
+# Visualize word frequency by sentiment
+tidy_df %>% 
+  count(sentiment, word) %>% 
+  group_by(sentiment) %>% 
+  # Calculate word proportions
+  mutate(proportion = n / sum(n)) %>% 
+  select(-n) %>% 
+  # move each sentiment as separate column
+  pivot_wider(names_from = sentiment, values_from = proportion) %>% 
+  # move negative and neutral proportions back to the same column
+  pivot_longer(Negative:Neutral, names_to = "sentiment", values_to = "proportion") %>% 
+  # visualize negative and neutral proportions agains positive proportion
+  ggplot(aes(x = proportion, y = Positive, color = abs(Positive - proportion))) +
+  geom_abline(lty = 2) +
+  geom_point(size = 2.5, alpha = 0.5) +
+  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
+  scale_x_log10(labels = percent_format()) +
+  scale_y_log10(labels = percent_format()) +
+  scale_color_gradient(limits = c(0, 0.001), 
+                       low = "darkslategray4", high = "gray75") +
+  facet_grid(sentiment ~ .) +
+  labs(x = "Proportion in Negative (top) / Neutral (bottom)", y = "Proportion in Positive") +
+  theme(legend.position = "none")
+
+```
