@@ -634,18 +634,6 @@ conf_mat_resampled(multi_lasso_rs, tidy = FALSE, parameters = best_acc %>% filte
 
 ```
 
-## Confusion matrix (ROC AUC)
-
-```{r, fig.height=6.5}
-
-# Re-sampled confusion matrix with the best ROC AUC lambda
-# Average of 5-folds
-conf_mat_resampled(multi_lasso_rs, tidy = FALSE, parameters = best_auc %>% filter(penalty == best_auc$penalty[1])) %>%
-  autoplot(type = "heatmap") +
-  ggtitle("Confusion matrix for 5-fold cross-validation", subtitle = "ROC AUC used as the metric")
-
-```
-
 ## Capturing ambiguity
 
 ```{r, fig.height=6.5, fig.width=8}
@@ -685,7 +673,7 @@ workflow() %>%
 
     - using bigrams, trigrams etc.
     
-    - Preprocessing steps such as removing stop words, removing digits, brand names
+    - Preprocessing steps such as removing stop words, removing digits, brand names, stemming, lemmatization
     
 
 ```{r, fig.height=4, fig.width=6}
@@ -763,3 +751,29 @@ bind_rows(pos_coeffs, neg_coeffs) %>%
 
 
 ```
+
+# Summary
+
+## Final thoughts
+
+* Other models
+
+* Word embeddings `Word2Vec`, [GloVe](https://nlp.stanford.edu/projects/glove/)
+
+* Deep learning: Pre-trained language models, BERT, RoBERTa etc.
+
+# Extra slides
+
+## Confusion matrix (ROC AUC)
+
+```{r, fig.height=6.5}
+
+# Re-sampled confusion matrix with the best ROC AUC lambda
+# Average of 5-folds
+conf_mat_resampled(multi_lasso_rs, tidy = FALSE, parameters = best_auc %>% filter(penalty == best_auc$penalty[1])) %>%
+  autoplot(type = "heatmap") +
+  ggtitle("Confusion matrix for 5-fold cross-validation", subtitle = "ROC AUC used as the metric")
+
+```
+
+
