@@ -277,7 +277,7 @@ $$
 
 * TF-IDF: The product of TF and IDF is a statistic intended to measure how important a word is to a collection of text documents. 
 
-* E.g. a word which only appears in few sentences, but many times will get a higher TF-IDF, whereas words appearing in all sentences get a zero value
+* For example, a word which only appears in few sentences (but possibly many times) will get a higher TF-IDF, whereas words appearing in all sentences get a zero value
 
 ## High TF-IDF words by sentiment
 
@@ -505,7 +505,9 @@ null_rs %>%
 
 * Regularized linear models are a class of statistical models that can be used in regression and classification tasks
 
-* Lasso classification learns how much of a penalty should be put on the coefficient estimates, and for some features it may shrink them to zero, which helps us to select less features for the final model
+* Lasso regularization places a penalty on the coefficient estimates, and for some features it may shrink them to zero, which helps us to select less features for the final model
+
+* One task during model training is to select an optimal amount of regularization
 
 * As pre-processing steps we extract words as tokens, filter a maximum of 1000 most common tokens, and calculate the TF-IDF statistic for the tokens
 
@@ -576,7 +578,7 @@ autoplot(multi_lasso_rs) +
 
 ```
 
-## Confusion matrix (accuracy)
+## Confusion matrix
 
 ```{r, fig.height=6.5}
 
@@ -584,7 +586,7 @@ autoplot(multi_lasso_rs) +
 # Average of 5-folds
 conf_mat_resampled(multi_lasso_rs, tidy = FALSE, parameters = best_acc %>% filter(penalty == best_acc$penalty[1])) %>%
   autoplot(type = "heatmap") +
-  ggtitle("Confusion matrix for 5-fold cross-validation", subtitle = "Accuracy used as the metric")
+  ggtitle("Confusion matrix for 5-fold cross-validation", subtitle = "Accuracy used as the metric for choosing lambda")
 
 ```
 
@@ -710,9 +712,13 @@ bind_rows(pos_coeffs, neg_coeffs) %>%
 
 ## Final thoughts
 
-* Other models
+* The model we trained outperforms the `null model`
 
-* Word embeddings `Word2Vec`, [GloVe](https://nlp.stanford.edu/projects/glove/)
+* We could try to improve in through expert feedback, testing other type of algorithms, gathering more data
+
+* (Semi-)automated retrieval of example sentences from pdf-files feasible ([pdftools](https://www.r-bloggers.com/2016/03/introducing-pdftools-a-fast-and-portable-pdf-extractor/) etc.)
+
+* The use of word embeddings might be worth exploring: `Word2Vec`, [GloVe](https://nlp.stanford.edu/projects/glove/)
 
 * Deep learning: Pre-trained language models, BERT, RoBERTa etc.
 
@@ -775,7 +781,7 @@ tidy_df %>%
 # Average of 5-folds
 conf_mat_resampled(multi_lasso_rs, tidy = FALSE, parameters = best_auc %>% filter(penalty == best_auc$penalty[1])) %>%
   autoplot(type = "heatmap") +
-  ggtitle("Confusion matrix for 5-fold cross-validation", subtitle = "ROC AUC used as the metric")
+  ggtitle("Confusion matrix for 5-fold cross-validation", subtitle = "ROC AUC used as the metric for choosing lambda")
 
 ```
 
