@@ -8,7 +8,7 @@ params:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
 
 ## Packages -----------
 
@@ -262,52 +262,6 @@ tidy_df %>%
 
 ```
 
-
-## Sentiments from dictionaries
-
-* A number of readily available sentiment dictionaries are available, which help us attach emotion to single words
-
-* In dictionary-based methods the total sentiment for a piece of text is determined by adding up the individual sentiment scores for each word in the text
-
-* Example ([AFINN](http://www2.imm.dtu.dk/pubdb/pubs/6010-full.html) dictionary by Finn Årup Nielsen):
-
-```{r}
-
-get_sentiments("afinn") %>% 
-  sample_n(4) %>% 
-  knitr::kable(caption = "Sentiment scores for four example words")
-
-```
-
-## Attach sentiment to sentences
-
-```{r, fig.height = 4, fig.width = 8, message=FALSE}
-
-tidy_df %>% 
-  # Add sentiment scores for words from afinn dictionary 
-  inner_join(get_sentiments("afinn"), by = "word") %>% 
-  count(id, sentiment, value) %>% 
-  group_by(id, sentiment) %>%
-  # Calculate sentiment scores for sentences by adding up the product of individual words and their sentiment score
-  summarise(sentiment_score = sum(value*n)) %>% 
-  # Re-order sentiments for the plot
-  mutate(sentiment = factor(sentiment, levels = c("Positive", "Negative", "Neutral"))) %>% 
-  ggplot(aes(x = id, y = sentiment_score, fill = sentiment)) +
-  geom_col() +
-  ggtitle("Sentiments from AFINN dictionary by Finn Årup Nielsen") +
-  # Change plot colors
-  scale_fill_manual(values = brewer.pal(n = 3, name = "Set2")) +
-  labs(y = "Sentiment scores for sentences", x = "Sentence ID")
-
-```
-
-* Drawbacks such as many words are missing from this dictionary
-
-* Sentiments depend on the context:
-
-> Tero likes to **share** with his friends.
-
-> The OmniCorp **share** went into sharp decline.
 
 # Moving beyond word counts
 
@@ -762,7 +716,56 @@ bind_rows(pos_coeffs, neg_coeffs) %>%
 
 * Deep learning: Pre-trained language models, BERT, RoBERTa etc.
 
+
 # Extra slides
+
+
+## Sentiments from dictionaries
+
+* A number of readily available sentiment dictionaries are available, which help us attach emotion to single words
+
+* In dictionary-based methods the total sentiment for a piece of text is determined by adding up the individual sentiment scores for each word in the text
+
+* Example ([AFINN](http://www2.imm.dtu.dk/pubdb/pubs/6010-full.html) dictionary by Finn Årup Nielsen):
+
+```{r}
+
+get_sentiments("afinn") %>% 
+  sample_n(4) %>% 
+  knitr::kable(caption = "Sentiment scores for four example words")
+
+```
+
+## Attach sentiment to sentences
+
+```{r, fig.height = 4, fig.width = 8, message=FALSE}
+
+tidy_df %>% 
+  # Add sentiment scores for words from afinn dictionary 
+  inner_join(get_sentiments("afinn"), by = "word") %>% 
+  count(id, sentiment, value) %>% 
+  group_by(id, sentiment) %>%
+  # Calculate sentiment scores for sentences by adding up the product of individual words and their sentiment score
+  summarise(sentiment_score = sum(value*n)) %>% 
+  # Re-order sentiments for the plot
+  mutate(sentiment = factor(sentiment, levels = c("Positive", "Negative", "Neutral"))) %>% 
+  ggplot(aes(x = id, y = sentiment_score, fill = sentiment)) +
+  geom_col() +
+  ggtitle("Sentiments from AFINN dictionary by Finn Årup Nielsen") +
+  # Change plot colors
+  scale_fill_manual(values = brewer.pal(n = 3, name = "Set2")) +
+  labs(y = "Sentiment scores for sentences", x = "Sentence ID")
+
+```
+
+* Drawbacks such as many words are missing from this dictionary
+
+* Sentiments depend on the context:
+
+> Tero likes to **share** with his friends.
+
+> The OmniCorp **share** went into sharp decline.
+
 
 ## Confusion matrix (ROC AUC)
 
