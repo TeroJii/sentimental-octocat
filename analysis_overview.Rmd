@@ -507,7 +507,9 @@ null_rs %>%
 
 * Lasso regularization places a penalty on the coefficient estimates, and for some features it may shrink them to zero, which helps us to select less features for the final model
 
-* One task during model training is to select an optimal amount of regularization
+* One target of model training is to select an optimal amount of regularization
+
+* The advantage of this model engine is that it can effectively handle sparse data, which helps in NLP tasks
 
 * As pre-processing steps we extract words as tokens, filter a maximum of 1000 most common tokens, and calculate the TF-IDF statistic for the tokens
 
