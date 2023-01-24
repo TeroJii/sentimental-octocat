@@ -690,12 +690,12 @@ bind_rows(pos_coeffs, neg_coeffs) %>%
 
 * We could try to improve in through expert feedback, testing other type of algorithms, gathering more data
 
-* (Semi-)automated retrieval of example sentences from pdf-files feasible ([pdftools](https://www.r-bloggers.com/2016/03/introducing-pdftools-a-fast-and-portable-pdf-extractor/) etc.)
-
 * The use of word embeddings might be worth exploring: `Word2Vec`, [GloVe](https://nlp.stanford.edu/projects/glove/)
 
 * Deep learning: Pre-trained language models, BERT, RoBERTa etc.
 
+
+* (Semi-)automated retrieval of example sentences from pdf-files feasible ([pdftools](https://www.r-bloggers.com/2016/03/introducing-pdftools-a-fast-and-portable-pdf-extractor/) etc.)
 
 # Extra slides
 
