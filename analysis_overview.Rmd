@@ -366,34 +366,6 @@ text_df %>%
 
 ```
 
-## Visualize bigrams by sentiment
-
-```{r, fig.height = 6.5, fig.width=8}
-
-# Unite bigrams after removing stopwords
-bigrams_united <- bigrams_filtered %>%
-  unite(bigram, word1, word2, sep = " ")
-
-# Count TF-IDF for bigrams 
-bigram_tf_idf <- bigrams_united %>%
-  count(sentiment, bigram) %>%
-  bind_tf_idf(bigram, sentiment, n) %>%
-  arrange(desc(tf_idf))
-
-# Visualize by sentiment
-bigram_tf_idf %>% 
-  # Re-order sentiments for the plot
-  mutate(sentiment = factor(sentiment, levels = c("Positive", "Negative", "Neutral"))) %>%
-  group_by(sentiment) %>% 
-  arrange(desc(tf_idf)) %>%
-  top_n(3) %>% 
-  ggplot(aes(x = tf_idf, y = bigram, fill = sentiment)) +
-  geom_col() +
-  scale_fill_manual(values = brewer.pal(n = 3, name = "Set2")) +
-  facet_grid(sentiment~., scales = "free")
-
-```
-
 # From exploration to classification
 
 ## Basic principles
@@ -505,11 +477,11 @@ null_rs %>%
 
 * Regularized linear models are a class of statistical models that can be used in regression and classification tasks
 
+* The advantage of this model engine is that it can effectively handle sparse data, which helps in NLP tasks
+
 * Lasso regularization places a penalty on the coefficient estimates, and for some features it may shrink them to zero, which helps us to select less features for the final model
 
 * One target of model training is to select an optimal amount of regularization
-
-* The advantage of this model engine is that it can effectively handle sparse data, which helps in NLP tasks
 
 * As pre-processing steps we extract words as tokens, filter a maximum of 1000 most common tokens, and calculate the TF-IDF statistic for the tokens
 
@@ -773,6 +745,35 @@ tidy_df %>%
 > Tero likes to **share** with his friends.
 
 > The OmniCorp **share** went into sharp decline.
+
+
+## Visualize bigrams by sentiment
+
+```{r, fig.height = 6.5, fig.width=8}
+
+# Unite bigrams after removing stopwords
+bigrams_united <- bigrams_filtered %>%
+  unite(bigram, word1, word2, sep = " ")
+
+# Count TF-IDF for bigrams 
+bigram_tf_idf <- bigrams_united %>%
+  count(sentiment, bigram) %>%
+  bind_tf_idf(bigram, sentiment, n) %>%
+  arrange(desc(tf_idf))
+
+# Visualize by sentiment
+bigram_tf_idf %>% 
+  # Re-order sentiments for the plot
+  mutate(sentiment = factor(sentiment, levels = c("Positive", "Negative", "Neutral"))) %>%
+  group_by(sentiment) %>% 
+  arrange(desc(tf_idf)) %>%
+  top_n(3) %>% 
+  ggplot(aes(x = tf_idf, y = bigram, fill = sentiment)) +
+  geom_col() +
+  scale_fill_manual(values = brewer.pal(n = 3, name = "Set2")) +
+  facet_grid(sentiment~., scales = "free")
+
+```
 
 
 ## Confusion matrix (ROC AUC)
